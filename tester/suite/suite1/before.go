@@ -1,11 +1,11 @@
 package suite1
 
 import (
-	"backend/bootstrap/config"
-	"backend/bootstrap/connection"
-	"backend/bootstrap/logger"
-	"backend/model"
-	"backend/util"
+	"hade/bootstrap/config"
+	"hade/bootstrap/connection"
+	"hade/bootstrap/logger"
+	"hade/model"
+	"hade/util"
 	"log"
 	"path"
 )

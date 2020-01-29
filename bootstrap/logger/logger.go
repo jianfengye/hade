@@ -1,7 +1,7 @@
 package logger
 
 import(
-	"backend/util"
+	"hade/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"

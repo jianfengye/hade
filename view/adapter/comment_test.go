@@ -1,8 +1,8 @@
 package adapter
 
 import (
-	"backend/model"
-	"backend/view/swagger/models"
+	"hade/model"
+	"hade/view/swagger/models"
 	"reflect"
 	"testing"
 	"time"

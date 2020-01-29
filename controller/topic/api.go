@@ -1,11 +1,11 @@
 package topic
 
 import (
-	"backend/bootstrap/connection"
-	"backend/model"
-	"backend/util"
-	"backend/view/adapter"
-	"backend/view/swagger/models"
+	"hade/bootstrap/connection"
+	"hade/model"
+	"hade/util"
+	"hade/view/adapter"
+	"hade/view/swagger/models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jianfengye/collection"

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"backend/bootstrap/connection"
+	"hade/bootstrap/connection"
 	"errors"
 	"github.com/jianfengye/collection"
 	"github.com/jinzhu/gorm"

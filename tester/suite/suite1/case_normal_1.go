@@ -1,12 +1,12 @@
 package suite1
 /*
 import (
-	"backend/bootstrap/connection"
-	"backend/controller/comment"
-	"backend/controller/tag"
-	"backend/controller/topic"
-	"backend/model"
-	"backend/view/swagger/models"
+	"hade/bootstrap/connection"
+	"hade/controller/comment"
+	"hade/controller/tag"
+	"hade/controller/topic"
+	"hade/model"
+	"hade/view/swagger/models"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"

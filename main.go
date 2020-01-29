@@ -1,12 +1,12 @@
 package main
 
 import (
-	"backend/bootstrap/logger"
-	"backend/controller/comment"
-	"backend/controller/knowledge"
-	"backend/controller/tag"
-	"backend/controller/topic"
-	"backend/middleware"
+	"hade/bootstrap/logger"
+	"hade/controller/comment"
+	"hade/controller/knowledge"
+	"hade/controller/tag"
+	"hade/controller/topic"
+	"hade/middleware"
 	"flag"
 	"fmt"
 
@@ -14,9 +14,9 @@ import (
 	"path"
 	"log"
 
-	"backend/bootstrap/connection"
-	"backend/bootstrap/config"
-	"backend/util"
+	"hade/bootstrap/connection"
+	"hade/bootstrap/config"
+	"hade/util"
 
 	"github.com/gin-gonic/gin"
 )

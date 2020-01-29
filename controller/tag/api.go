@@ -1,10 +1,10 @@
 package tag
 
 import (
-	"backend/model"
-	"backend/util"
-	"backend/view/adapter"
-	"backend/view/swagger/models"
+	"hade/model"
+	"hade/util"
+	"hade/view/adapter"
+	"hade/view/swagger/models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"math"

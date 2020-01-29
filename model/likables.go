@@ -1,7 +1,7 @@
 package model
 
 import (
-	"backend/bootstrap/connection"
+	"hade/bootstrap/connection"
 	"errors"
 	"github.com/jinzhu/gorm"
 	"time"

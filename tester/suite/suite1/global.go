@@ -1,8 +1,8 @@
 package suite1
 
 import (
-	"backend/bootstrap/connection"
-	"backend/model"
+	"hade/bootstrap/connection"
+	"hade/model"
 )
 
 var (

@@ -1,9 +1,9 @@
 package adapter
 
 import (
-	"backend/model"
-	"backend/util"
-	"backend/view/swagger/models"
+	"hade/model"
+	"hade/util"
+	"hade/view/swagger/models"
 	"github.com/go-openapi/strfmt"
 )
 

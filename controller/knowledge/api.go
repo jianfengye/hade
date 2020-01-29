@@ -1,9 +1,9 @@
 package knowledge
 
 import (
-	"backend/model"
-	"backend/util"
-	"backend/view/adapter"
+	"hade/model"
+	"hade/util"
+	"hade/view/adapter"
 	"errors"
 	"github.com/gin-gonic/gin"
 )
