@@ -1,0 +1,701 @@
+swagger: "2.0"
+info:
+  description: "这是后端接口项目"
+  version: "1.0.0"
+  title: "后端"
+host: "localhost:8801"
+basePath: "/api"
+tags:
+  - name: 话题
+    description: 话题相关接口
+  - name: 评论
+    description: 评论相关接口
+  - name: 标签
+    description: 标签相关接口
+  - name: 知识分享
+    description: 知识点相关接口
+schemes:
+  - http
+paths:
+  /topic/list:
+    get:
+      summary: 获取话题列表
+      description: 这个接口获取所有话题列表，分页显示
+      tags:
+        - 话题
+      parameters:
+        - name: page
+          in: query
+          description: 获取的页面数
+          required: false
+          type: integer
+          format: int
+          default: 0
+        - name: size
+          in: query
+          description: 页面的展示条数，默认为20
+          required: false
+          type: integer
+          format: int
+          default: 20
+      responses:
+        200:
+          description: 成功操作
+          schema:
+            type: object
+            properties:
+              topics:
+                type: object
+                $ref: '#/definitions/topic_summarys'
+              pager:
+                type: object
+                $ref: '#/definitions/pager'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /topic/detail:
+    get:
+      summary: 获取单个话题详情
+      description: 根据id获取单个话题详情
+      tags:
+        - 话题
+      parameters:
+        - name: topic_id
+          in: query
+          description: 话题主键
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: 成功返回
+          schema:
+            $ref: '#/definitions/topic'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /topic/update:
+    post:
+      tags:
+        - 话题
+      summary: 更新某个话题
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      description: 更新话题
+      parameters:
+        - name: topic_id
+          type: integer
+          in: formData
+          description: 话题id
+          required: true
+        - name: title
+          type: string
+          in: formData
+          description: 话题的标题
+          required: true
+        - name: content
+          type: string
+          in: formData
+          description: 话题内容
+          required: true
+        - name: link
+          type: string
+          description: 话题链接
+          in: formData
+          required: true
+        - name: tag_ids
+          type: array
+          in: formData
+          items:
+            type: integer
+          description: 话题标签
+          required: true
+      responses:
+        200:
+          description: 返回成功
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /topic/create:
+    post:
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      tags:
+        - 话题
+      description: 创建话题
+      summary: 创建话题
+      parameters:
+        - name: title
+          type: string
+          in: formData
+          description: 话题的标题
+        - name: content
+          type: string
+          in: formData
+          description: 话题内容
+        - name: link
+          type: string
+          description: 话题链接
+          in: formData
+        - name: tag_ids
+          type: array
+          description: 话题标签
+          in: formData
+          items:
+            type: integer
+      responses:
+        200:
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/topic_summary'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /topic/delete:
+    post:
+      tags:
+        - 话题
+      summary: 删除话题
+      description: 删除话题
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - name: topic_id
+          in: formData
+          required: true
+          type: integer
+          description: 话题id
+      responses:
+        200:
+          description: 删除成功
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /topic/like:
+    post:
+      tags:
+        - 话题
+      summary: 给话题点赞
+      description: 给话题点赞
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - name: topic_id
+          type: integer
+          in: formData
+          description: 话题id
+          required: true
+      responses:
+        200:
+          description: 操作成功
+  /comment/create:
+    post:
+      tags:
+        - 评论
+      summary: 创建某个话题的评论
+      description: 创建某个话题的评论
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - name: topic_id
+          type: integer
+          in: formData
+          description: 话题id
+          required: true
+        - name: content
+          type: string
+          in: formData
+          description: 评论内容
+          required: true
+      responses:
+        200:
+          description: 创建评论成功
+          schema:
+            $ref: '#/definitions/comment_summary'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /comment/delete:
+    post:
+      tags:
+        - 评论
+      summary: 删除某个评论
+      description: 只能删除自己的评论，是软删除，内容显示评论已删除
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - name: comment_id
+          type: integer
+          in: formData
+          description: 评论id
+          required: true
+      responses:
+        200:
+          description: 删除评论成功
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /comment/list:
+    get:
+      tags:
+        - 评论
+      summary: 获取某个话题的所有评论
+      description: 获取某个话题的所有评论
+      parameters:
+        - name: topic_id
+          type: integer
+          in: query
+          description: 话题id
+          required: true
+      responses:
+        200:
+          description: 获取话题的所有评论
+          schema:
+            $ref: '#/definitions/comments'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /comment/append:
+    post:
+      tags:
+        - 评论
+      summary: 增加二级评论
+      description: 为某个一级评论增加二级评论
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - name: comment_id
+          type: integer
+          in: formData
+          description: 评论id
+          required: true
+        - name: content
+          type: string
+          in: formData
+          description: 二级评论内容
+          required: true
+      responses:
+        200:
+          description: 增加二级评论成功
+          schema:
+            $ref: '#/definitions/comment_summary'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /tag/list:
+    get:
+      tags:
+        - 标签
+      summary: 获取所有标签
+      description: 获取所有标签列表
+      consumes:
+        - "multipart/form-data"
+      responses:
+        200:
+          description: 创建评论成功
+          schema:
+            $ref: '#/definitions/tags'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /tag/topics:
+    get:
+      summary: 获取话题列表
+      description: 这个接口获取所有话题列表，分页显示
+      tags:
+        - 标签
+      parameters:
+        - name: page
+          in: query
+          description: 获取的页面数
+          required: false
+          type: integer
+          format: int
+          default: 0
+        - name: size
+          in: query
+          description: 页面的展示条数，默认为20
+          required: false
+          type: integer
+          format: int
+          default: 20
+        - name: tag_id
+          in: query
+          description: 标签id
+          required: true
+          type: integer
+          default: 1
+      responses:
+        200:
+          description: 成功操作
+          schema:
+            type: object
+            properties:
+              topics:
+                type: object
+                $ref: '#/definitions/topic_summarys'
+              pager:
+                type: object
+                $ref: '#/definitions/pager'
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+  /knowledge/daily:
+    get:
+      summary: 获取每日知识点
+      description: 获取某一天的每日知识点
+      tags:
+        - 知识分享
+      parameters:
+        - name: day
+          in: query
+          description: 获取知识点的日期
+          required: true
+          type: string
+          default: "2019-09-01"
+      responses:
+        200:
+          description: 成功操作
+          schema:
+            $ref: "#/definitions/daily"
+        500:
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/error_response'
+definitions:
+  user_summary:
+    type: object
+    description: 用于列表页等用户信息显示
+    required:
+      - id
+      - name
+      - small_image
+    properties:
+      id:
+        type: integer
+        format: int
+        description: 用户唯一id
+      name:
+        type: string
+        format: string
+        description: 用户显示名称
+      small_image:
+        type: string
+        format: string
+        description: 用户显示小头像
+  topic_summary:
+    type: object
+    description: 简要话题结构
+    required:
+      - id
+      - title
+      - content_summary
+      - source
+      - link
+      - score
+      - like_count
+      - comment_count
+      - created_at
+      - user
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 话题唯一标识别
+      title:
+        type: string
+        description: 话题的标题
+      content_summary:
+        type: string
+        description: 话题的内容概要，简略至100字以内
+      source:
+        type: string
+        description: 话题来源
+        enum:
+          - 论坛
+          - 自发
+      link:
+        type: string
+        format: uri
+        description: 话题外部链接，可能为空
+      score:
+        type: number
+        format: float
+        description: 话题评分
+      like_count:
+        type: integer
+        format: int64
+        description: 点赞数
+      comment_count:
+        type: integer
+        format: int64
+        description: 评论数
+      created_at:
+        type: string
+        description: 创建时间
+      user:
+        $ref: '#/definitions/user_summary'
+  topic:
+    type: object
+    description: 简要话题结构
+    required:
+      - id
+      - title
+      - content
+      - source
+      - link
+      - score
+      - like_count
+      - comment_count
+      - created_at
+      - user
+      - tags
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 话题唯一标识别
+      title:
+        type: string
+        description: 话题的标题
+      content:
+        type: string
+        description: 话题的全部内容
+      source:
+        type: string
+        description: 话题来源
+        enum:
+          - 论坛
+          - 自发
+      link:
+        type: string
+        description: 话题外部链接，可能为空
+      score:
+        type: number
+        format: float
+        description: 话题评分
+      like_count:
+        type: integer
+        format: int64
+        description: 点赞数
+      comment_count:
+        type: integer
+        format: int64
+        description: 评论数
+      created_at:
+        type: string
+        description: 创建时间
+      user:
+        type: object
+        $ref: '#/definitions/user_summary'
+      tags:
+        type: array
+        items:
+          $ref: '#/definitions/tag'
+  topic_summarys:
+    type: array
+    description: 列表页返回的数据格式
+    items:
+      $ref: '#/definitions/topic_summary'
+  pager:
+    type: object
+    description: 分页信息
+    required:
+      - size
+      - page
+      - total_page
+    properties:
+      size:
+        type: integer
+        description: 单页个数
+        example: 20
+      page:
+        type: integer
+        description: 当前页面
+        example: 1
+      total_page:
+        type: integer
+        description: 总共页面数
+        example: 4
+  error_response:
+    type: object
+    description: 错误返回信息
+    required:
+      - code
+      - msg
+    properties:
+      code:
+        type: integer
+        description: 自定义错误码
+        example: 50001
+      msg:
+        type: string
+        description: 错误信息
+        example: 话题不存在
+  comment_summary:
+    type: object
+    description: 简要评论结构
+    required:
+      - id
+      - content
+      - like_count
+      - parent_id
+      - created_at
+      - user
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 评论唯一标示
+      content:
+        type: string
+        description: 评论全部内容
+      like_count:
+        type: integer
+        format: int64
+        description: 点赞数
+      parent_id:
+        type: integer
+        format: int64
+        description: 父级别评论的id
+      created_at:
+        type: string
+        description: 创建时间
+      user:
+        type: object
+        $ref: '#/definitions/user_summary'
+  comment_detail:
+    type: object
+    description: 简要评论结构
+    required:
+      - id
+      - content
+      - like_count
+      - parent_id
+      - created_at
+      - user
+      - comments
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 评论唯一标示
+      content:
+        type: string
+        description: 评论全部内容
+      like_count:
+        type: integer
+        format: int64
+        description: 点赞数
+      parent_id:
+        type: integer
+        format: int64
+        description: 父级别评论的id
+      created_at:
+        type: string
+        description: 创建时间
+      user:
+        type: object
+        $ref: '#/definitions/user_summary'
+      comments:
+        type: array
+        description: 子级别评论，最多只有两层，不会有更多层
+        items:
+          $ref: '#/definitions/comment_summary'
+  comments:
+    type: array
+    description: 评论详情列表
+    items:
+      $ref: '#/definitions/comment_detail'
+  tag:
+    type: object
+    description: 标签
+    required:
+      - id
+      - name
+      - topic_count
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 标签唯一标示
+        example: 1
+      name:
+        type: string
+        description: 标签名称
+        example: golang
+      topic_count:
+        type: integer
+        description: 话题数
+        example: 10
+  tags:
+    type: array
+    description: 标签列表
+    items:
+      $ref: '#/definitions/tag'
+  daily:
+    type: object
+    description: 本日知识点结构
+    required:
+      - id
+      - title
+      - author
+      - day
+      - content
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: 每日唯一标示
+        example: 1
+      title:
+        type: string
+        description: 知识点标题
+        example: go中多goroutine有几种方法进行数据同步？
+      author:
+        type: string
+        description: 作者
+        example: 轩脉刃
+      day:
+        type: string
+        description: 日期
+        example: 2019-01-02
+      created_at:
+        type: string
+        description: 创建时间
+      content:
+        type: array
+        description: 具体今日知识点的内容
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+              example: 深入go实现
+            link:
+              type: string
+              example: http://baidu.com
+            comment:
+              type: string
+              example: 评论内容

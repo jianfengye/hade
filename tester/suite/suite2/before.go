@@ -1,0 +1,35 @@
+package suite2
+
+import (
+	"backend/bootstrap/config"
+	"backend/bootstrap/connection"
+	"backend/bootstrap/logger"
+	"backend/model"
+	"backend/util"
+	"log"
+	"path"
+)
+
+func SetUp() {
+	cf := path.Join(util.RootFolder(), "env.test.yaml")
+	if err := config.Init(cf); err != nil {
+		log.Fatalln(err)
+	}
+
+	// 加载日志
+	if err := logger.Init(config.Default); err != nil {
+		log.Fatalln(err)
+	}
+
+	// 加载数据库
+	if err := connection.Init(config.Default); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+
+func Before() {
+	// 清空所有数据
+	connection.Default.Delete(&model.Daily{})
+	initDB()
+}
