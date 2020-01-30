@@ -17,5 +17,6 @@ require (
 	github.com/jinzhu/gorm v1.9.8
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
+	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
 )
