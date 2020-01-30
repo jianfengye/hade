@@ -4,7 +4,6 @@ import (
 	"hade/bootstrap/connection"
 	"hade/controller/knowledge"
 	"hade/model"
-	"hade/view/swagger/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"

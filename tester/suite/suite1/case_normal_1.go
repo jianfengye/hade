@@ -1,12 +1,10 @@
 package suite1
+
 /*
 import (
 	"hade/bootstrap/connection"
-	"hade/controller/comment"
-	"hade/controller/tag"
 	"hade/controller/topic"
 	"hade/model"
-	"hade/view/swagger/models"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -214,4 +212,4 @@ func NormalCase1(t *testing.T) {
 
 }
 
- */
+*/

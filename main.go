@@ -1,21 +1,18 @@
 package main
 
 import (
-	"hade/bootstrap/logger"
-	"hade/controller/comment"
-	"hade/controller/knowledge"
-	"hade/controller/tag"
-	"hade/controller/topic"
-	"hade/middleware"
 	"flag"
 	"fmt"
+	"hade/bootstrap/logger"
+	"hade/controller/topic"
+	"hade/middleware"
 
+	"log"
 	"os"
 	"path"
-	"log"
 
-	"hade/bootstrap/connection"
 	"hade/bootstrap/config"
+	"hade/bootstrap/connection"
 	"hade/util"
 
 	"github.com/gin-gonic/gin"
@@ -55,9 +52,6 @@ func main() {
 	api := r.Group("/api")
 	{
 		topic.Register(api)
-		comment.Register(api)
-		tag.Register(api)
-		knowledge.Register(api)
 	}
 
 	// 启动服务
