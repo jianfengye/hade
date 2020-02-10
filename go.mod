@@ -6,6 +6,8 @@ replace golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c => github.com/golang
 
 replace golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223 => github.com/golang/sys v0.0.0-20190608050228-5b15430b70e3
 
+replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43
+
 require (
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
 	github.com/gin-gonic/gin v1.4.0
