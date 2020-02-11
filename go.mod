@@ -1,24 +1,16 @@
-module hade
+module github.com/jianfengye/hade
 
-go 1.12
-
-replace golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c => github.com/golang/net v0.0.0-20190607181551-461777fb6f67
-
-replace golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223 => github.com/golang/sys v0.0.0-20190608050228-5b15430b70e3
-
-replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43
+go 1.13
 
 require (
-	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
-	github.com/gin-gonic/gin v1.4.0
-	github.com/go-openapi/errors v0.19.2
-	github.com/go-openapi/strfmt v0.19.0
-	github.com/go-openapi/swag v0.19.2
-	github.com/go-openapi/validate v0.19.2
-	github.com/jianfengye/collection v0.0.0-20190620142820-c4fe771a3171
-	github.com/jinzhu/gorm v1.9.8
-	github.com/sirupsen/logrus v1.4.2
-	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
-	github.com/spf13/cobra v0.0.5
-	github.com/spf13/viper v1.4.0
+	github.com/gin-contrib/sse v0.1.0
+	github.com/gin-gonic/gin v1.5.0
+	github.com/golang/protobuf v1.3.2
+	github.com/julienschmidt/httprouter v1.3.0
+	github.com/mattn/go-isatty v0.0.12
+	github.com/stretchr/testify v1.4.0
+	github.com/ugorji/go/codec v1.1.7
+	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+	gopkg.in/go-playground/validator.v8 v8.18.2
+	gopkg.in/yaml.v2 v2.2.2
 )
