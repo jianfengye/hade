@@ -13,6 +13,7 @@ import (
 	"path"
 	"sync"
 
+	"github.com/jianfengye/hade/framework"
 	"github.com/jianfengye/hade/gin/render"
 )
 
@@ -53,6 +54,7 @@ type RoutesInfo []RouteInfo
 // Create an instance of Engine, by using New() or Default()
 type Engine struct {
 	RouterGroup
+	framework.HadeInjector
 
 	// Enables automatic redirection if the current route can't be matched but a
 	// handler for the path with (without) the trailing slash exists.
@@ -153,6 +155,14 @@ func Default() *Engine {
 	engine := New()
 	engine.Use(Logger(), Recovery())
 	return engine
+}
+
+func (engine *Engine) UseService(news map[string]framework.Provider) {
+	if news != nil {
+		for key, new := range news {
+			engine.SetProvider(key, new)
+		}
+	}
 }
 
 func (engine *Engine) allocateContext() *Context {
