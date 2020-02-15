@@ -21,7 +21,7 @@ func (sp *DemoServiceProvider) IsDefer() bool {
 	return true
 }
 
-func (sp *DemoServiceProvider) InstanceParams() []interface{} {
+func (sp *DemoServiceProvider) Params() []interface{} {
 	return []interface{}{sp.C}
 }
 

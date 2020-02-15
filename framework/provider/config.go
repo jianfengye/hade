@@ -11,7 +11,7 @@ func (v *ViperProvider) Register(c Container) {
 func (v *ViperProvider) Boot(c Container) {
 }
 
-func (v *ViperProvider) InstanceParams() []interface{} {
+func (v *ViperProvider) Params() []interface{} {
 	return v.params
 }
 

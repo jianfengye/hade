@@ -1,12 +1,6 @@
 package framework
 
-import (
-	"sync"
-
-	"github.com/jianfengye/hade/framework/contract"
-)
-
-type NewInstance func(...interface{}) (interface{}, error)
+import "sync"
 
 // Container is a core struct which store provider and instance
 type Container interface {
@@ -39,15 +33,6 @@ func (e DErrorChain) HasError() bool {
 
 func (e DErrorChain) GetError() error {
 	return e.err
-}
-
-type ServiceProvider interface {
-	Register(Container) NewInstance
-	Boot(Container)
-
-	IsDefer() bool
-	InstanceParams() []interface{}
-	Name() string
 }
 
 // HadeContainer is instance of Container
@@ -96,7 +81,7 @@ func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) Cont
 
 	// if provider is not defer
 	if provider.IsDefer() == false {
-		params := provider.InstanceParams()
+		params := provider.Params()
 		method := hade.methods[key]
 		provider.Boot(hade)
 		instance, err := method(params...)
@@ -149,7 +134,7 @@ func (hade *HadeContainer) make(key string, params []interface{}) interface{} {
 	prov := hade.FindServiceProvider(key)
 	isSingle := hade.isSingletons[key]
 	if params == nil {
-		params = prov.InstanceParams()
+		params = prov.Params()
 	}
 	prov.Boot(hade)
 	ins, err := method(params...)
@@ -163,15 +148,4 @@ func (hade *HadeContainer) make(key string, params []interface{}) interface{} {
 		return ins
 	}
 	return ins
-}
-
-// ConfigService get ConfigService which provider by name
-func (hade *HadeContainer) ConfigService() contract.Config {
-	ins := hade.Make("config")
-	if ins != nil {
-		if c, ok := ins.(contract.Config); ok {
-			return c
-		}
-	}
-	return nil
 }
