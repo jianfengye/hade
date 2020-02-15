@@ -158,11 +158,6 @@ func Default() *Engine {
 	return engine
 }
 
-// RegisterService register a Service by params
-func RegisterService(engine *Engine, s string, p framework.Provider, isSignton bool, params []interface{}) {
-	engine.container.SetProvider(s, p, isSignton, params)
-}
-
 func (engine *Engine) allocateContext() *Context {
 	return &Context{engine: engine}
 }

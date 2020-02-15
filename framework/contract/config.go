@@ -1,7 +1,7 @@
 package contract
 
 // 配置接口
-type Confige interface {
+type Config interface {
 	// 根据string获取配置
 	Get(string) interface{}
 	// 判断是否存在

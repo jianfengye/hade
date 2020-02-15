@@ -1,34 +1,43 @@
 package provider
 
-import (
-	"github.com/spf13/viper"
-)
-
 type ViperProvider struct {
-	viper *viper.Viper
+	params []interface{}
 }
 
-func DefaultViperProvider(options ...interface{}) interface{} {
+func (v *ViperProvider) Register(c Container) {
+	c.BindMethod(v.Name(), NewViperService)
+}
+
+func (v *ViperProvider) Boot(c Container) {
+}
+
+func (v *ViperProvider) InstanceParams() []interface{} {
+	return v.params
+}
+
+func (v *ViperProvider) Name() string {
+	return "config"
+}
+
+type ViperService struct {
+}
+
+func NewViperService(...interface{}) (interface{}, error) {
+	return nil, nil
+}
+
+func (v *ViperService) Get(string) interface{} {
 	return nil
 }
 
-func NewViperProvider(options ...interface{}) interface{} {
-	// TODO: generateViperProvider by options
-	return nil
-}
-
-func (v *ViperProvider) Get(string) interface{} {
-	return nil
-}
-
-func (v *ViperProvider) GetInt(string) int {
+func (v *ViperService) GetInt(string) int {
 	return 0
 }
 
-func (v *ViperProvider) GetStr(string) string {
+func (v *ViperService) GetStr(string) string {
 	return ""
 }
 
-func (v *ViperProvider) IsExist(string) bool {
+func (v *ViperService) IsExist(string) bool {
 	return false
 }
