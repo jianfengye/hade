@@ -1,55 +1,85 @@
 package framework
 
 import (
+	"sync"
+
 	"github.com/jianfengye/hade/framework/contract"
-	serviceProvider "github.com/jianfengye/hade/framework/provider"
 )
 
-const (
-	CONFIG_SERVICE: "config"
+var (
+	CONFIG_SERVICE = "config"
 )
 
-type Provider func(...interface{}) (interface{})
+// Provider all service provider should implement this for new service
+type Provider func(...interface{}) interface{}
 
-// 注入器
-type Injector interface {
-	SetProvider(string, Provider)
-
-	ServiceConfig(...interface{}) contract.IConfiger
+type providerKit struct {
+	provider  Provider      // 注册器
+	params    []interface{} // provider需要的参数
+	service   interface{}   // 最终的服务
+	isSington bool          // 判断是否单例子
 }
 
-type HadeInjector struct {
-	instances map[string]interface{} // 单例
-	providers map[string]Provider
+// Container is a core struct which store provider and instance
+type Container interface {
+	SetProvider(string, Provider, bool, []interface{})
+	GetService(string) interface{}
+	NewService(string, []interface{})
 }
 
-func NewHadeInjector() *HadeInjector {
-	return &HadeInjector{
-		instances: map[string]interace{},
-		providers: map[string]Provider{} 
+// HadeContainer is instance of Container
+type HadeContainer struct {
+	kits map[string]providerKit // 测试套件
+	lock sync.RWMutex
+}
+
+// NewHadeContainer is new instance
+func NewHadeContainer() *HadeContainer {
+	return &HadeContainer{
+		kits: map[string]providerKit{},
+		lock: sync.RWMutex{},
 	}
 }
 
-func (hade *HadeInjector) SetProvider(key string, provider Provider) {
-	hade.providers[key] = provider
+// SetProvider set provider
+func (hade *HadeContainer) SetProvider(key string, provider Provider, isSington bool, params []interface{}) {
+	kit := providerKit{
+		provider:  provider,
+		params:    params,
+		isSington: isSington,
+	}
+	hade.kits[key] = kit
 	return
 }
 
-func (hade *HadeInjector) ServiceConfig(options ...interface{}) contract.IConfiger {
+func (hade *HadeContainer) GetService(key string) interface{} {
+	hade.lock.RLock()
+	defer hade.lock.RUnlock()
+
+	if k, ok := hade.kits[key]; ok {
+		if !k.isSington {
+			return k.provider(k.params...)
+		} else {
+			if k.service != nil {
+				return k.service
+			} else {
+				k.service = k.provider(k.params...)
+				return k.service
+			}
+		}
+	}
+
+	return nil
+}
+
+// ConfigService get ConfigService which provider by name
+func (hade *HadeContainer) ConfigService() contract.Config {
 	key := CONFIG_SERVICE
-	if v := hade.instances(key); v != nil {
-		return v.(contract.IConfiger)
+	ins := hade.GetService(key)
+	if ins != nil {
+		if c, ok := ins.(contract.Config); ok {
+			return c
+		}
 	}
-
-	var fn Provider
-	if existNewProvider, ok := hade.providers[key]; ok {
-		fn = existNewProvider
-	} else {
-		fn = serviceProvider.NewViperProvider
-	}
-
-	c := fn(options).(contract.IConfiger)
-	hades.providers[key] = fn
-	hades.instances[key] = c
-	return c
+	return nil
 }

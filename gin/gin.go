@@ -54,7 +54,7 @@ type RoutesInfo []RouteInfo
 // Create an instance of Engine, by using New() or Default()
 type Engine struct {
 	RouterGroup
-	framework.HadeInjector
+	container *framework.HadeContainer
 
 	// Enables automatic redirection if the current route can't be matched but a
 	// handler for the path with (without) the trailing slash exists.
@@ -146,6 +146,7 @@ func New() *Engine {
 	engine.pool.New = func() interface{} {
 		return engine.allocateContext()
 	}
+	engine.container = framework.NewHadeContainer()
 	return engine
 }
 
@@ -157,12 +158,9 @@ func Default() *Engine {
 	return engine
 }
 
-func (engine *Engine) UseService(news map[string]framework.Provider) {
-	if news != nil {
-		for key, new := range news {
-			engine.SetProvider(key, new)
-		}
-	}
+// RegisterService register a Service by params
+func RegisterService(engine *Engine, s string, p framework.Provider, isSignton bool, params []interface{}) {
+	engine.container.SetProvider(s, p, isSignton, params)
 }
 
 func (engine *Engine) allocateContext() *Context {
@@ -354,6 +352,7 @@ func (engine *Engine) RunFd(fd int) (err error) {
 // ServeHTTP conforms to the http.Handler interface.
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	c := engine.pool.Get().(*Context)
+	c.HadeContainer = engine.container
 	c.writermem.reset(w)
 	c.Request = req
 	c.reset()
