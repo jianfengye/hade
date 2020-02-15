@@ -1,38 +1,18 @@
 package framework
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/pkg/errors"
+)
 
 // Container is a core struct which store provider and instance
 type Container interface {
-	Bind(ServiceProvider, bool) Container
-	Singleton(ServiceProvider) Container
+	Bind(ServiceProvider, bool) error
+	Singleton(ServiceProvider) error
 
-	Make(string) interface{}
-	MakeNew(string, []interface{}) interface{}
-
-	ErrorChain
-}
-
-type ErrorChain interface {
-	SetError(error)
-	HasError() bool
-	GetError() error
-}
-
-type DErrorChain struct {
-	err error
-}
-
-func (e DErrorChain) SetError(err error) {
-	e.err = err
-}
-
-func (e DErrorChain) HasError() bool {
-	return e.err != nil
-}
-
-func (e DErrorChain) GetError() error {
-	return e.err
+	Make(string) (interface{}, error)
+	MakeNew(string, []interface{}) (interface{}, error)
 }
 
 // HadeContainer is instance of Container
@@ -43,7 +23,6 @@ type HadeContainer struct {
 	methods      map[string]NewInstance
 	isSingletons map[string]bool
 
-	DErrorChain
 	lock sync.RWMutex
 }
 
@@ -58,19 +37,7 @@ func NewHadeContainer() *HadeContainer {
 	}
 }
 
-func (hade *HadeContainer) GetError() error {
-	return hade.DErrorChain.GetError()
-}
-
-func (hade *HadeContainer) HasError() bool {
-	return hade.DErrorChain.HasError()
-}
-
-func (hade *HadeContainer) SetError(err error) {
-	hade.SetError(err)
-}
-
-func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) Container {
+func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) error {
 	hade.lock.RLock()
 	defer hade.lock.RUnlock()
 	key := provider.Name()
@@ -86,19 +53,17 @@ func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) Cont
 		provider.Boot(hade)
 		instance, err := method(params...)
 		if err != nil {
-			hade.SetError(err)
-			return hade
+			return errors.New(err.Error())
 		}
 		if isSingleton == true {
 			hade.instances[key] = instance
 		}
 	}
-	return hade
+	return nil
 }
 
-func (hade *HadeContainer) Singleton(provider ServiceProvider) Container {
-	hade.Bind(provider, true)
-	return hade
+func (hade *HadeContainer) Singleton(provider ServiceProvider) error {
+	return hade.Bind(provider, true)
 }
 
 func (hade *HadeContainer) FindServiceProvider(key string) ServiceProvider {
@@ -110,23 +75,23 @@ func (hade *HadeContainer) FindServiceProvider(key string) ServiceProvider {
 	return nil
 }
 
-func (hade *HadeContainer) Make(key string) interface{} {
+func (hade *HadeContainer) Make(key string) (interface{}, error) {
 	return hade.make(key, nil)
 }
 
-func (hade *HadeContainer) MakeNew(key string, params []interface{}) interface{} {
+func (hade *HadeContainer) MakeNew(key string, params []interface{}) (interface{}, error) {
 	return hade.make(key, params)
 }
 
-func (hade *HadeContainer) make(key string, params []interface{}) interface{} {
+func (hade *HadeContainer) make(key string, params []interface{}) (interface{}, error) {
 	// check has Register
 	if hade.FindServiceProvider(key) == nil {
-		return nil
+		return nil, nil
 	}
 
 	// check instance
 	if ins, ok := hade.instances[key]; ok {
-		return ins
+		return ins, nil
 	}
 
 	// is not instance
@@ -139,13 +104,12 @@ func (hade *HadeContainer) make(key string, params []interface{}) interface{} {
 	prov.Boot(hade)
 	ins, err := method(params...)
 	if err != nil {
-		hade.SetError(err)
-		return nil
+		return nil, errors.New(err.Error())
 	}
 
 	if isSingle {
 		hade.instances[key] = ins
-		return ins
+		return ins, nil
 	}
-	return ins
+	return ins, nil
 }

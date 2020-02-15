@@ -1,6 +1,9 @@
 package demo
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type DemoService struct {
 	c map[string]string
@@ -9,7 +12,7 @@ type DemoService struct {
 func NewDemoService(params ...interface{}) (interface{}, error) {
 	c := params[0].(map[string]string)
 	fmt.Println("new demo service")
-	return &DemoService{c: c}, nil
+	return &DemoService{c: c}, errors.New("new demo service error")
 }
 
 func (s *DemoService) Get(key string) string {
