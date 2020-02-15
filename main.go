@@ -10,11 +10,14 @@ func main() {
 	r := gin.Default()
 	gin.Register(r, &demo.DemoServiceProvider{
 		C: map[string]string{"foo": "bar"},
-	}, true)
+	}, false)
 
 	r.GET("/ping", func(c *gin.Context) {
-		demoService := c.Make("demo").(contract.Demo)
-		val := demoService.Get("foo")
+		//demoService := c.Make("demo").(contract.Demo)
+		demoService2 := c.MakeNew("demo", []interface{}{
+			map[string]string{"foo": "bar2"},
+		}).(contract.Demo)
+		val := demoService2.Get("foo")
 		c.JSON(200, gin.H{
 			"message": val,
 		})

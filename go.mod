@@ -8,6 +8,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mattn/go-isatty v0.0.12
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go/codec v1.1.7

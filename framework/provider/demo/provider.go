@@ -1,6 +1,8 @@
 package demo
 
 import (
+	"fmt"
+
 	"github.com/jianfengye/hade/framework"
 )
 
@@ -26,4 +28,5 @@ func (sp *DemoServiceProvider) Params() []interface{} {
 }
 
 func (sp *DemoServiceProvider) Boot(c framework.Container) {
+	fmt.Println("demo service boot")
 }
