@@ -1,64 +1,34 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"hade/bootstrap/logger"
-	"hade/controller/topic"
-	"hade/middleware"
 
-	"log"
-	"os"
-	"path"
-
-	"hade/bootstrap/config"
-	"hade/bootstrap/connection"
-	"hade/util"
-
-	"github.com/gin-gonic/gin"
+	"github.com/jianfengye/hade/framework/contract"
+	"github.com/jianfengye/hade/framework/provider/demo"
+	"github.com/jianfengye/hade/gin"
 )
 
 func main() {
-	// 读取配置文件
-	var cf string
-	flag.StringVar(&cf, "config", "", "config path")
-	flag.Parse()
-	if cf == "" {
-		cf = path.Join(util.RootFolder(), "env.default.yaml")
-		if !util.FileIsExist(cf) {
-			flag.PrintDefaults()
-			os.Exit(1)
-		}
-	}
-
-	if err := config.Init(cf); err != nil {
-		log.Fatalln(err)
-	}
-
-	// 加载日志
-	if err := logger.Init(config.Default); err != nil {
-		log.Fatalln(err)
-	}
-
-	// 加载数据库
-	if err := connection.Init(config.Default); err != nil {
-		log.Fatalln(err)
-	}
-	defer connection.Destory(config.Default)
-
-	// 加载路由
 	r := gin.Default()
-	r.Use(middleware.CorsMiddleware())
-	api := r.Group("/api")
-	{
-		topic.Register(api)
-	}
+	gin.Register(r, &demo.DemoServiceProvider{
+		C: map[string]string{"foo": "bar"},
+	}, false)
 
-	// 启动服务
-	ip := config.Default.GetString("app.ip")
-	port := config.Default.GetString("app.port")
-	addr := fmt.Sprint(ip, ":", port)
-	if err := r.Run(addr); err != nil {
-		log.Fatalln(err)
-	}
+	r.GET("/ping", func(c *gin.Context) {
+		demoService2, err := c.MakeNew("demo", []interface{}{
+			map[string]string{"foo": "bar2"},
+		})
+		if err != nil {
+			infos := fmt.Sprintf("%+v", err)
+			c.JSON(200, gin.H{
+				"message": infos,
+			})
+			return
+		}
+		val := demoService2.(contract.Demo).Get("foo")
+		c.JSON(200, gin.H{
+			"message": val,
+		})
+	})
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
