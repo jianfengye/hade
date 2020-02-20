@@ -37,6 +37,7 @@ func NewHadeContainer() *HadeContainer {
 	}
 }
 
+// Bind make relationship between provider and contract
 func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) error {
 	hade.lock.RLock()
 	defer hade.lock.RUnlock()
@@ -62,6 +63,7 @@ func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) erro
 	return nil
 }
 
+// Singleton make provider be Singleton, instance once
 func (hade *HadeContainer) Singleton(provider ServiceProvider) error {
 	return hade.Bind(provider, true)
 }
@@ -86,7 +88,7 @@ func (hade *HadeContainer) MakeNew(key string, params []interface{}) (interface{
 func (hade *HadeContainer) make(key string, params []interface{}) (interface{}, error) {
 	// check has Register
 	if hade.FindServiceProvider(key) == nil {
-		return nil, nil
+		return nil, errors.New("contract " + key + " have not register")
 	}
 
 	// check instance
