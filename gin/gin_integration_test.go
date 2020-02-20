@@ -39,20 +39,20 @@ func testRequest(t *testing.T, url string) {
 	assert.Equal(t, "200 OK", resp.Status, "should get a 200")
 }
 
-func TestRunEmpty(t *testing.T) {
-	os.Setenv("PORT", "")
-	router := New()
-	go func() {
-		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
-		assert.NoError(t, router.Run())
-	}()
-	// have to wait for the goroutine to start and run the server
-	// otherwise the main thread will complete
-	time.Sleep(5 * time.Millisecond)
+// func TestRunEmpty(t *testing.T) {
+// 	os.Setenv("PORT", "")
+// 	router := New()
+// 	go func() {
+// 		router.GET("/example", func(c *Context) { c.String(http.StatusOK, "it worked") })
+// 		assert.NoError(t, router.Run())
+// 	}()
+// 	// have to wait for the goroutine to start and run the server
+// 	// otherwise the main thread will complete
+// 	time.Sleep(5 * time.Millisecond)
 
-	assert.Error(t, router.Run(":8080"))
-	testRequest(t, "http://localhost:8080/example")
-}
+// 	assert.Error(t, router.Run(":8080"))
+// 	testRequest(t, "http://localhost:8080/example")
+// }
 
 func TestRunTLS(t *testing.T) {
 	router := New()
