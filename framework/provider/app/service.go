@@ -1,10 +1,15 @@
 package app
 
 type HadeApp struct{
+	basePath string
 }
 
 func NewHadeApp(params ...interface{}) (interface{}, error) {
-	return &HadeApp{}, nil
+	var basePath string
+	if len(params) == 1 {
+		basePath = params[0].(string)
+	}
+	return &HadeApp{basePath: basePath}, nil
 }
 
 // application version
@@ -14,7 +19,7 @@ func (app *HadeApp) Version() string {
 
 // base path which is the base folder
 func (app *HadeApp) BasePath() string {
-	return "/Users/didi/Documents/workspace/hade/" 
+	return app.basePath
 }
 
 // config folder which contains config

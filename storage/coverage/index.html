@@ -58,7 +58,7 @@
 				
 				<option value="file1">github.com/jianfengye/hade/framework/provider/app/provider.go (100.0%)</option>
 				
-				<option value="file2">github.com/jianfengye/hade/framework/provider/app/service.go (57.1%)</option>
+				<option value="file2">github.com/jianfengye/hade/framework/provider/app/service.go (70.0%)</option>
 				
 				<option value="file3">github.com/jianfengye/hade/framework/services.go (0.0%)</option>
 				
@@ -280,6 +280,8 @@ import (
 // HadeAppProvider provide a App service, it must be singlton, and not delay
 type HadeAppProvider struct {
         app *HadeApp
+
+        BasePath string
 }
 
 // Register registe a new function for make a service instance
@@ -298,7 +300,7 @@ func (provider *HadeAppProvider) IsDefer() bool <span class="cov8" title="1">{
 
 // Params define the necessary params for NewInstance
 func (provider *HadeAppProvider) Params() []interface{} <span class="cov8" title="1">{
-        return nil
+        return []interface{}{provider.BasePath}
 }</span>
 
 /// Name define the name for this service
@@ -310,11 +312,16 @@ func (provider *HadeAppProvider) Name() string <span class="cov8" title="1">{
 		<pre class="file" id="file2" style="display: none">package app
 
 type HadeApp struct{
+        basePath string
 }
 
 func NewHadeApp(params ...interface{}) (interface{}, error) <span class="cov8" title="1">{
-        return &amp;HadeApp{}, nil
-}</span>
+        var basePath string
+        if len(params) == 1 </span><span class="cov8" title="1">{
+                basePath = params[0].(string)
+        }</span>
+        <span class="cov8" title="1">return &amp;HadeApp{basePath: basePath}, nil</span>
+}
 
 // application version
 func (app *HadeApp) Version() string <span class="cov0" title="0">{
@@ -323,7 +330,7 @@ func (app *HadeApp) Version() string <span class="cov0" title="0">{
 
 // base path which is the base folder
 func (app *HadeApp) BasePath() string <span class="cov8" title="1">{
-        return "/Users/didi/Documents/workspace/hade/" 
+        return app.basePath
 }</span>
 
 // config folder which contains config

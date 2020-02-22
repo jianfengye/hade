@@ -7,6 +7,8 @@ import (
 // HadeAppProvider provide a App service, it must be singlton, and not delay
 type HadeAppProvider struct {
 	app *HadeApp
+
+	BasePath string
 }
 
 // Register registe a new function for make a service instance
@@ -25,7 +27,7 @@ func (provider *HadeAppProvider) IsDefer() bool {
 
 // Params define the necessary params for NewInstance
 func (provider *HadeAppProvider) Params() []interface{} {
-	return nil
+	return []interface{}{provider.BasePath}
 }
 
 /// Name define the name for this service

@@ -10,8 +10,9 @@ import (
 
 func TestHadeAppProvider(t *testing.T) {
 	Convey("test normal case", t, func() {
+		basePath := "/Users/didi/Documents/workspace/hade/"
 		c := framework.NewHadeContainer()
-		sp := &HadeAppProvider{}
+		sp := &HadeAppProvider{BasePath: basePath}
 
 		err := c.Singleton(sp)
 		So(err, ShouldBeNil)
@@ -22,6 +23,6 @@ func TestHadeAppProvider(t *testing.T) {
 		So(app, ShouldImplement, iapp)
 		hade := app.(contract.App)
 		logPath := hade.LogPath()
-		So(logPath, ShouldEqual, "/Users/didi/Documents/workspace/hade/storage/logs/")
+		So(logPath, ShouldEqual, basePath+"storage/logs/")
 	})
 }
