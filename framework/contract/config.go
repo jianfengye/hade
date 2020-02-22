@@ -2,29 +2,44 @@ package contract
 
 import "time"
 
+const (
+	// ConfigKey is config key in container
+	ConfigKey = "config"
+)
+
 // Config define setting from files, it support key contains dov。
 // for example:
 // .Get("user.name")
-// use toml-lang like, https://github.com/toml-lang/toml v0.4.0
+// suggest use yaml format, https://yaml.org/spec/1.2/spec.html
 type Config interface {
+	// IsExist check setting is exist
 	IsExist(key string) bool
 
+	// Get a new interface
 	Get(key string) interface{}
+	// GetBool get bool type
 	GetBool(key string) bool
+	// GetInt get Int type
 	GetInt(key string) int
-	GetInt32(key string) int32
-	GetInt64(key string) int64
-	GetUint(key string) uint
-	GetUint32(key string) uint32
-	GetUint64(key string) uint64
+	// GetFloat64 get float64
 	GetFloat64(key string) float64
+	// GetTime get time type
 	GetTime(key string) time.Time
-	GetDuration(key string) time.Duration
+	// GetString get string typen
+	GetString(key string) string
+
+	// GetIntSlice get int slice type
 	GetIntSlice(key string) []int
+	// GetStringSlice get string slice type
 	GetStringSlice(key string) []string
+
+	// GetStringMap get map which key is string, value is interface
 	GetStringMap(key string) map[string]interface{}
+	// GetStringMapString get map which key is string, value is string
 	GetStringMapString(key string) map[string]string
+	// GetStringMapStringSlice get map which key is string, value is string slice
 	GetStringMapStringSlice(key string) map[string][]string
 
-	Load(key string, val interface{}) error // load a config to a struct, val should be an pointer
+	// Load a config to a struct, val should be an pointer
+	Load(key string, val interface{}) error
 }

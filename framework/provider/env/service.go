@@ -92,3 +92,8 @@ func (en *HadeEnv) Get(key string) string {
 	}
 	return ""
 }
+
+// All return all settings
+func (en *HadeEnv) All() map[string]string {
+	return en.maps	
+}

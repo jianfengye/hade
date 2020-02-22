@@ -26,4 +26,6 @@ type Env interface {
 	IsExist(string) bool
 	// Get environment setting, if not exist, return ""
 	Get(string) string
+	// All return all settings
+	All() map[string]string
 }
