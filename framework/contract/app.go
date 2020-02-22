@@ -1,5 +1,8 @@
 package contract
 
+// AppKey is the key in container
+const AppKey = "app"
+
 // App define application structure
 type App interface {
 	// application version

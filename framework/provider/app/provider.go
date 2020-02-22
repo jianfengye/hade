@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/jianfengye/hade/framework"
+	"github.com/jianfengye/hade/framework/contract"
 )
 
 // HadeAppProvider provide a App service, it must be singlton, and not delay
@@ -32,5 +33,5 @@ func (provider *HadeAppProvider) Params() []interface{} {
 
 /// Name define the name for this service
 func (provider *HadeAppProvider) Name() string {
-	return "app"
+	return contract.AppKey
 }
