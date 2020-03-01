@@ -29,6 +29,10 @@ func TestHadeConfig_Normal(t *testing.T) {
 
 		maps := conf.GetStringMap("database.mysql")
 		So(maps, ShouldContainKey, "hostname")
+		So(maps["timeout"], ShouldEqual, 1)
+
+		maps2 := conf.GetStringMapString("databse.mysql")
+		So(maps2["timeout"], ShouldEqual, "")
 
 		type Mysql struct {
 			Hostname string
