@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	pkgLog "log"
 
 	"github.com/jianfengye/hade/framework/contract"
@@ -8,8 +9,8 @@ import (
 )
 
 type HadeLog struct {
-	level contract.LogLevel
-	formatter contract.Formatter
+	level      contract.LogLevel
+	formatter  contract.Formatter
 	ctxFielder contract.CtxFielder
 
 	logger *pkgLog.Logger
@@ -19,31 +20,31 @@ func (log *HadeLog) IsLevelEnable(level contract.LogLevel) bool {
 	return level <= log.level
 }
 
-func (log *HadeLog) logf(logger *log.Logger, level contract.LogLevel, ctx context.Context, msg string, fields []interface{}) error {
+func (log *HadeLog) logf(logger *pkgLog.Logger, level contract.LogLevel, ctx context.Context, msg string, fields []interface{}) error {
 	if !log.IsLevelEnable(level) {
 		return nil
 	}
 	prefix := ""
 	switch level {
-		case contract.PanicLevel:
-			prefix = "[Panic]" 
-		case contract.FatalLevel:
-			prefix = "[Fatal]"
-		case contract.ErrorLevel:
-			prefix = "[Error]"
-		case contract.WarnLevel:
-			prefix = "[Warn]"
-		case contract.InfoLevel:
-			prefix = "[Info]"
-		case contract.DebugLevel:
-			prefix = "[Debug]"
-		case contract.TraceLevel:
-			prefix = "[Trace]"
+	case contract.PanicLevel:
+		prefix = "[Panic] "
+	case contract.FatalLevel:
+		prefix = "[Fatal] "
+	case contract.ErrorLevel:
+		prefix = "[Error] "
+	case contract.WarnLevel:
+		prefix = "[Warn] "
+	case contract.InfoLevel:
+		prefix = "[Info] "
+	case contract.DebugLevel:
+		prefix = "[Debug] "
+	case contract.TraceLevel:
+		prefix = "[Trace] "
 	}
 	logger.SetPrefix(prefix)
 	fs := fields
 	if log.ctxFielder != nil {
-		t := log.ctxFielder(ctx) 
+		t := log.ctxFielder(ctx)
 		if t != nil {
 			fs = append(fs, t...)
 		}
@@ -57,11 +58,11 @@ func (log *HadeLog) logf(logger *log.Logger, level contract.LogLevel, ctx contex
 	}
 
 	if level == contract.PanicLevel {
-		logger.Panicln(ct)
+		logger.Panicln(string(ct))
 		return nil
 	}
-	
-	logger.Println(ct)
+
+	logger.Println(string(ct))
 	return nil
 }
 
@@ -114,4 +115,3 @@ func (log *HadeLog) SetCxtFielder(handler contract.CtxFielder) {
 func (log *HadeLog) SetFormatter(formatter contract.Formatter) {
 	log.formatter = formatter
 }
-

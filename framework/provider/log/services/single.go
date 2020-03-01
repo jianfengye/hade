@@ -1,6 +1,7 @@
 package services
 
 import (
+	"io"
 	pkgLog "log"
 	"os"
 	"path/filepath"
@@ -48,4 +49,8 @@ func (l *HadeSingleLog) SetFile(file string) {
 
 func (l *HadeSingleLog) SetFolder(folder string) {
 	l.folder = folder
+}
+
+func (l *HadeSingleLog) SetOutput(out io.Writer) {
+	l.logger.SetOutput(out)
 }

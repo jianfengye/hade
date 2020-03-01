@@ -2,6 +2,7 @@ package contract
 
 import (
 	"context"
+	"io"
 )
 
 const LogKey = "log"
@@ -77,6 +78,7 @@ type SingleFileLog interface {
 	Log
 	SetFile(file string)
 	SetFolder(folder string)
+	SetOutput(out io.Writer)
 }
 
 type RotatingFileLog interface {
@@ -89,4 +91,5 @@ type RotatingFileLog interface {
 
 type ConsoleLog interface {
 	Log
+	SetOutput(out io.Writer)
 }

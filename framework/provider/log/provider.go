@@ -28,8 +28,8 @@ func (l *HadeLogServiceProvider) Register(c framework.Container) framework.NewIn
 	}
 
 	cs := c.MustMake(contract.ConfigKey).(contract.Config)
-	l.driver = cs.GetString("config.driver")
-	l.configs = cs.GetStringMap("config")
+	l.driver = strings.ToLower(cs.GetString("log.driver"))
+	l.configs = cs.GetStringMap("log")
 
 	switch l.driver {
 	case "single":
