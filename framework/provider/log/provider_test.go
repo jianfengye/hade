@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/jianfengye/hade/framework"
 	"github.com/jianfengye/hade/framework/contract"
@@ -59,7 +60,7 @@ func TestConsoleLog_Normal(t *testing.T) {
 }
 
 func TestSingleLog_Normal(t *testing.T) {
-	Convey("test hade console log normal case", t, func() {
+	Convey("test hade single log normal case", t, func() {
 		basePath := tests.BasePath
 		file := "hade_normal.log"
 
@@ -84,5 +85,38 @@ func TestSingleLog_Normal(t *testing.T) {
 		fd, err := os.Stat(f)
 		So(err, ShouldBeNil)
 		So(fd.Size(), ShouldBeGreaterThan, 0)
+	})
+}
+
+func TestRotateLog_Normal(t *testing.T) {
+	Convey("test hade rotate log normal case", t, func() {
+		basePath := tests.BasePath
+		file := "hade_normal.log"
+
+		c := framework.NewHadeContainer()
+		c.Singleton(&app.HadeAppProvider{BasePath: basePath})
+		c.Singleton(&env.HadeEnvProvider{})
+		c.Singleton(&config.FakeConfigProvider{
+			FileName: "log",
+			Content:  []byte("driver: rotate\nfile: " + file + "\nmax_files: 2\ndate_format: \"%Y%m%d\""),
+		})
+		app := c.MustMake(contract.AppKey).(contract.App)
+		folder := app.LogPath()
+
+		err := c.Singleton(&HadeLogServiceProvider{})
+		So(err, ShouldBeNil)
+
+		l := c.MustMake(contract.LogKey).(contract.RotatingFileLog)
+		// check file exist first
+		l.Info(context.Background(), "test_rotate", []interface{}{"foo"})
+		f := filepath.Join(folder, file)
+		f2 := filepath.Join(folder, file+"."+time.Now().Format("20060102"))
+		defer os.Remove(f)
+		defer os.Remove(f2)
+		_, err = os.Stat(f)
+		So(err, ShouldBeNil)
+		fd2, err := os.Stat(f2)
+		So(err, ShouldBeNil)
+		So(fd2.Size(), ShouldBeGreaterThan, 0)
 	})
 }
