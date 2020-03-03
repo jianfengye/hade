@@ -20,8 +20,8 @@ import (
 
 	"github.com/gin-contrib/sse"
 	"github.com/jianfengye/hade/framework"
-	"github.com/jianfengye/hade/gin/binding"
-	"github.com/jianfengye/hade/gin/render"
+	"github.com/jianfengye/hade/framework/gin/binding"
+	"github.com/jianfengye/hade/framework/gin/render"
 )
 
 // Content-Type MIME of the most common data formats.
