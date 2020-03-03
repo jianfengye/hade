@@ -2,6 +2,8 @@
 
 参考laravel等项目
 
+提供serviceProvider，可以创建Provider的方式提供服务。所有提供的服务可以从gin.context中获取
+
 # 使用方法
 
 ## 如何做单元测试
@@ -14,10 +16,7 @@
 
 目前待做事项
 
-* TODO: log接口实现provider，并写测试用例
 * TODO: vue-cli的框架集成，并写测试用例
 * TODO: main函数切换为命令行方式，并写测试用例
-* TODO: ORM接口的集成
-* TODO: GORM的对接
 * TODO: 增加注释
 * TODO: ...
