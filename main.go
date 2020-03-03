@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jianfengye/hade/framework/contract"
+	"github.com/jianfengye/hade/framework/gin"
 	"github.com/jianfengye/hade/framework/provider/demo"
-	"github.com/jianfengye/hade/gin"
 )
 
 func main() {

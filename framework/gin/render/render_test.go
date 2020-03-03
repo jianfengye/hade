@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ugorji/go/codec"
 
-	testdata "github.com/jianfengye/hade/gin/testdata/protoexample"
+	testdata "github.com/jianfengye/hade/framework/gin/testdata/protoexample"
 )
 
 // TODO unit tests
