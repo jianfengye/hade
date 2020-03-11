@@ -8,19 +8,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// go just run local go bin
-var goCommand = &cobra.Command{
-	Use:   "go",
-	Short: "run PATH/go for go action",
+// npm just run local go bin
+var npmCommand = &cobra.Command{
+	Use:   "npm",
+	Short: "run PATH/npm for npm action",
 	RunE: func(c *cobra.Command, args []string) error {
-		path, err := exec.LookPath("go")
+		path, err := exec.LookPath("npm")
 		if err != nil {
-			log.Fatalln("hade go: should install npm in your PATH")
+			log.Fatalln("hade npm: should install npm in your PATH")
 		}
 
 		cmd := exec.Command(path, args...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		cmd.Run()
+		return nil
 	},
 }
