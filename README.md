@@ -14,8 +14,6 @@
 
 目前待做事项
 
-* TODO: vue-cli的框架集成，并写测试用例
 * TODO: 增加命令 hade build 编译自身到public目录
-* TODO: 增加命令 hade go xxx 相关命令，把go的命令
 * TODO: 增加注释
 * TODO: ...
