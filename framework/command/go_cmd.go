@@ -22,5 +22,6 @@ var goCommand = &cobra.Command{
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		cmd.Run()
+		return nil
 	},
 }
