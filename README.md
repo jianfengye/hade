@@ -12,7 +12,6 @@ hade框架目前定义的协议都在目录（framework/contract）下：
 * env: 定义了对应的环境配置，默认环境配置存放在app中定义的basePath下，使用.env进行存储，单行以key=value为格式
 * config: 定义了获取配置信息的服务，可以从app中定义的应用配置路径获取具体的配置，按照"[文件名].key1.key2"的方式获取配置信息，获取的配置值支持string,bool,int,float,time,[]int,[]string,map[string]string,map[string]interface{}, object 等多种格式
 * log: 定义了日志记录格式，定义7种级别的错误日志打印，支持控制台、文件、文件切割等日志打印方式
-```
 
 ## ServiceProvider
 
@@ -78,7 +77,7 @@ func (sp *DemoServiceProvider) Boot(c framework.Container) {
 * gorm
 
 # 代码框架
-
+```
 app  # 应用代码存放目录
   - console # 控制台应用
     - command # 具体的控制台应用
@@ -109,7 +108,7 @@ converage.sh # 代码覆盖率脚本
 hade # 初始化可执行的hade命令，下载框架后，运行build就生成
 main.go # 后端主要入口
 package.json # 前端的包管理文件
-
+```
 
 # 具体协议
 
