@@ -8,4 +8,6 @@ import (
 // Routes put all router here
 func Routes(r *gin.Engine) {
 	r.GET("/ping", demo.Ping)
+	r.GET("/demo", demo.Demo)
+	r.GET("/demo2", demo.Demo)
 }
