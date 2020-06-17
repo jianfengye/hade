@@ -1,16 +1,20 @@
-package routes
+package main
 
 import (
 	"time"
 
-	"github.com/jianfengye/hade/app/http/controllers/demo"
+	"github.com/gin-contrib/cors"
 	"github.com/jianfengye/hade/framework/gin"
-	"github.com/jianfengye/hade/framework/middleware/cors"
 )
 
-// Routes put all router here
-func Routes(r *gin.Engine) {
-	handler := cors.New(cors.Config{
+func main() {
+	router := gin.Default()
+	// CORS for https://foo.com and https://github.com origins, allowing:
+	// - PUT and PATCH methods
+	// - Origin header
+	// - Credentials share
+	// - Preflight requests cached for 12 hours
+	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://foo.com"},
 		AllowMethods:     []string{"PUT", "PATCH"},
 		AllowHeaders:     []string{"Origin"},
@@ -20,10 +24,6 @@ func Routes(r *gin.Engine) {
 			return origin == "https://github.com"
 		},
 		MaxAge: 12 * time.Hour,
-	})
-
-	r.Use(handler)
-	r.GET("/ping", demo.Ping)
-	r.GET("/demo", demo.Demo)
-	r.GET("/demo2", demo.Demo)
+	}))
+	router.Run()
 }
