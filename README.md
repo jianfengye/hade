@@ -120,6 +120,19 @@ package.json # 前端的包管理文件
 
 ## log
 
+# 中间件
+
+由于gin框架地址的迁移和修改，https://github.com/gin-contrib 下面的 gin 中间件插件并不能直接使用。需要
+* 拷贝到 github.com/jianfengye/hade/framework/middleware 下面
+* 去除go.mod和go.sum和.git
+* 将文件夹中所有文件import处 github.com/gin-gonic/gin 替换为 github.com/jianfengye/hade/framework/gin
+
+也可以直接使用命令
+
+`./hade middleware [add/remove/all] [repo]`
+将 https://github.com/gin-contrib 下面的中间件项目迁移到当前框架下
+
+
 # 待办事项
 
-- 尝试controller多参数时候实现依赖注入
+- 尝试一个命令同时提供web和api服务

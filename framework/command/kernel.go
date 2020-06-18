@@ -32,4 +32,8 @@ func AddKernelCommands(cmd *cobra.Command) {
 	cmd.AddCommand(goCommand)
 	cmd.AddCommand(npmCommand)
 	cmd.AddCommand(buildCommand)
+	middlewareCommand.AddCommand(middlewareAllCommand)
+	middlewareCommand.AddCommand(middlewareAddCommand)
+	middlewareCommand.AddCommand(middlewareRemoveCommand)
+	cmd.AddCommand(middlewareCommand)
 }
