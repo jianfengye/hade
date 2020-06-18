@@ -6,6 +6,7 @@ import (
 	"github.com/jianfengye/hade/app/http/controllers/demo"
 	"github.com/jianfengye/hade/framework/gin"
 	"github.com/jianfengye/hade/framework/middleware/cors"
+	"github.com/jianfengye/hade/framework/middleware/gzip"
 )
 
 // Routes put all router here
@@ -23,6 +24,7 @@ func Routes(r *gin.Engine) {
 	})
 
 	r.Use(handler)
+	r.Use(gzip.Gzip(gzip.DefaultCompression, gzip.WithExcludedExtensions([]string{".pdf", ".mp4"})))
 	r.GET("/ping", demo.Ping)
 	r.GET("/demo", demo.Demo)
 	r.GET("/demo2", demo.Demo)
