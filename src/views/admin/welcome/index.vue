@@ -1,5 +1,5 @@
 <template>
     <div>
-        123123
+        welcome
     </div>
 </template>

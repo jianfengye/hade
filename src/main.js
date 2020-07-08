@@ -1,9 +1,15 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
-import router from "./router/index.js"
+import {routes} from "./router.js";
+import Router from "vue-router";
 
+Vue.use(Router);
 Vue.config.productionTip = false
+
+let router = new Router({
+  routes: routes,
+});
 
 new Vue({
   vuetify,
