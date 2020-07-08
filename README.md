@@ -136,6 +136,3 @@ package.json # 前端的包管理文件
 # 待办事项
 
 - 尝试一个命令同时提供web和api服务
-- 尝试将vue-element-admin嵌入进框架
-- 前后端框架名字进行管理
-- 前端webpack增加，日常常用的vue webpack插件增加
