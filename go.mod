@@ -1,40 +1,46 @@
-module github.com/jianfengye/hade
+module hade
 
 go 1.13
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.1.1
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/cpuguy83/go-md2man/v2 v2.0.0
+	github.com/erikdubbelboer/gspt v0.0.0-20190125194910-e68493906b83
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
-	github.com/gin-contrib/cors v1.3.1
-	github.com/gin-contrib/gzip v0.0.1
+	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-contrib/sse v0.1.0
-	github.com/gin-gonic/gin v1.5.0
-	github.com/go-git/go-git v4.7.0+incompatible // indirect
 	github.com/go-git/go-git/v5 v5.1.0
-	github.com/golang/protobuf v1.3.3
+	github.com/golang/protobuf v1.4.2
+	github.com/inconshreveable/mousetrap v1.0.0
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
-	github.com/jianfengye/collection v0.0.0-20200321010924-e53745cde0fe
-	github.com/jinzhu/gorm v1.9.12
-	github.com/json-iterator/go v1.1.9
+	github.com/jianfengye/collection v0.0.0-20201009021456-34c4ccd6fe8f
+	github.com/jinzhu/gorm v1.9.16
+	github.com/jinzhu/now v1.1.1 // indirect
+	github.com/json-iterator/go v1.1.10
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/lestrrat/go-envload v0.0.0-20180220120943-6ed08b54a570 // indirect
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/mattn/go-isatty v0.0.12
-	github.com/mitchellh/mapstructure v1.2.2
-	github.com/pelletier/go-toml v1.6.0 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
+	github.com/mitchellh/mapstructure v1.3.3
 	github.com/pkg/errors v0.9.1
+	github.com/pkg/sftp v1.12.0
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/rs/xid v1.2.1
+	github.com/sevlyar/go-daemon v0.1.5
 	github.com/smartystreets/goconvey v1.6.4
-	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1
-	github.com/spf13/cobra v0.0.6
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.6.2 // indirect
-	github.com/stretchr/testify v1.4.0
-	github.com/tebeka/strftime v0.1.3 // indirect
+	github.com/spf13/viper v1.7.1
+	github.com/stretchr/testify v1.6.1
+	github.com/swaggo/gin-swagger v1.2.0
+	github.com/swaggo/swag v1.6.7
+	github.com/tebeka/strftime v0.1.5 // indirect
 	github.com/ugorji/go/codec v1.1.7
-	golang.org/x/net v0.0.0-20200301022130-244492dfa37a
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73
 	gopkg.in/go-playground/validator.v8 v8.18.2
-	gopkg.in/ini.v1 v1.54.0 // indirect
-	gopkg.in/src-d/go-git.v4 v4.13.1 // indirect
-	gopkg.in/yaml.v2 v2.2.8
+	gopkg.in/yaml.v2 v2.3.0
 )

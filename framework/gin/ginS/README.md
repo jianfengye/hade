@@ -7,7 +7,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jianfengye/hade/framework/gin/ginS"
+	"hade/framework/gin/ginS"
 )
 
 func main() {

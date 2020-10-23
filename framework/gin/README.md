@@ -738,7 +738,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jianfengye/hade/framework/gin/binding"
+	"hade/framework/gin/binding"
 	"gopkg.in/go-playground/validator.v8"
 )
 

@@ -10,7 +10,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/jianfengye/hade/framework/gin/internal/json"
+	"hade/framework/gin/internal/json"
 )
 
 // JSON contains the given interface object.

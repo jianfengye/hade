@@ -3,7 +3,7 @@ package demo
 import (
 	"fmt"
 
-	"github.com/jianfengye/hade/framework"
+	"hade/framework"
 )
 
 type DemoServiceProvider struct {
@@ -27,6 +27,7 @@ func (sp *DemoServiceProvider) Params() []interface{} {
 	return []interface{}{sp.C}
 }
 
-func (sp *DemoServiceProvider) Boot(c framework.Container) {
+func (sp *DemoServiceProvider) Boot(c framework.Container) error {
 	fmt.Println("demo service boot")
+	return nil
 }

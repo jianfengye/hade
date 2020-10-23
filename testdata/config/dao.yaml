@@ -1,6 +1,0 @@
-user:  # dao服务
-  pk: id  # 主键，非必须，默认id
-  table: user # 表名，如果没有设置，和dao名字一致
-  
-book:
-  pk: id

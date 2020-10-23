@@ -3,11 +3,14 @@ package formatter
 import (
 	"bytes"
 	"encoding/json"
+	"time"
+
+	"hade/framework/contract"
 
 	"github.com/pkg/errors"
 )
 
-func JsonFormatter(msg string, fields []interface{}) ([]byte, error) {
+func JsonFormatter(level contract.LogLevel, t time.Time, msg string, fields map[string]interface{}) ([]byte, error) {
 	bf := bytes.NewBuffer([]byte(msg))
 	bf.Write([]byte{':'})
 	c, err := json.Marshal(fields)

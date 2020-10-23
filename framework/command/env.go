@@ -3,17 +3,18 @@ package command
 import (
 	"fmt"
 
-	"github.com/jianfengye/hade/framework/contract"
-	"github.com/spf13/cobra"
+	"hade/framework/cobra"
+	"hade/framework/command/util"
+	"hade/framework/contract"
 )
 
 // envCommand show current envionment
 var envCommand = &cobra.Command{
 	Use:   "env",
-	Short: "Get current environment",
+	Short: "get current environment",
 	Run: func(c *cobra.Command, args []string) {
-		container := GetContainer(c.Root())
+		container := util.GetContainer(c.Root())
 		envService := container.MustMake(contract.EnvKey).(contract.Env)
-		fmt.Println(envService.AppEnv())
+		fmt.Println("environment:", envService.AppEnv())
 	},
 }

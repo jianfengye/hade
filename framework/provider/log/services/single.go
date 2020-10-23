@@ -1,12 +1,12 @@
 package services
 
 import (
-	"io"
-	pkgLog "log"
 	"os"
 	"path/filepath"
 
-	"github.com/jianfengye/hade/framework/contract"
+	"hade/framework"
+	"hade/framework/contract"
+
 	"github.com/pkg/errors"
 )
 
@@ -25,6 +25,8 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 	formatter := params[2].(contract.Formatter)
 	configs := params[3].(map[string]interface{})
 
+	c := params[4].(framework.Container)
+
 	log := &HadeSingleLog{}
 	log.SetLevel(level)
 	log.SetCxtFielder(ctxFielder)
@@ -37,8 +39,8 @@ func NewHadeSingleLog(params ...interface{}) (interface{}, error) {
 		return nil, errors.Wrap(err, "open log file err")
 	}
 
-	log.logger = pkgLog.New(fd, "", pkgLog.LstdFlags)
-	log.fd = fd
+	log.SetOutput(fd)
+	log.c = c
 
 	return log, nil
 }
@@ -49,8 +51,4 @@ func (l *HadeSingleLog) SetFile(file string) {
 
 func (l *HadeSingleLog) SetFolder(folder string) {
 	l.folder = folder
-}
-
-func (l *HadeSingleLog) SetOutput(out io.Writer) {
-	l.logger.SetOutput(out)
 }

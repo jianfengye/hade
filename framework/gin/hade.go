@@ -1,15 +1,13 @@
 package gin
 
-import "github.com/jianfengye/hade/framework"
+import "hade/framework"
 
 // Hade framework add functions
 
-// Register register a service provider for hade framework
-func Register(engine *Engine, provider framework.ServiceProvider, isSingleton bool) error {
-	return engine.container.Bind(provider, isSingleton)
+func (engine *Engine) SetContainer(container *framework.HadeContainer) {
+	engine.container = container
 }
 
-// Register register a singleton serviceProvider
-func RegisterSingleton(engine *Engine, provider framework.ServiceProvider) error {
-	return engine.container.Bind(provider, true)
+func (engine *Engine) Container() *framework.HadeContainer {
+	return engine.container
 }

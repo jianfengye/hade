@@ -4,7 +4,7 @@ import "time"
 
 const (
 	// ConfigKey is config key in container
-	ConfigKey = "config"
+	ConfigKey = "hade:config"
 )
 
 // Config define setting from files, it support key contains dov。
