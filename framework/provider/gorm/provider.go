@@ -1,8 +1,8 @@
 package gorm
 
 import (
-	"github.com/jianfengye/hade/framework"
-	"github.com/jianfengye/hade/framework/contract"
+	"hade/framework"
+	"hade/framework/contract"
 )
 
 type GormServiceProvider struct {
@@ -26,7 +26,7 @@ func (sp *GormServiceProvider) Params() []interface{} {
 	return []interface{}{sp.Config}
 }
 
-func (sp *GormServiceProvider) Boot(c framework.Container) {
+func (sp *GormServiceProvider) Boot(c framework.Container) error {
 	if sp.Config == nil {
 		if c.IsBind(contract.ConfigKey) {
 			config := c.MustMake(contract.ConfigKey).(contract.Config)
@@ -35,4 +35,5 @@ func (sp *GormServiceProvider) Boot(c framework.Container) {
 			}
 		}
 	}
+	return nil
 }

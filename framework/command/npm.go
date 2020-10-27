@@ -5,13 +5,13 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/spf13/cobra"
+	"hade/framework/cobra"
 )
 
 // npm just run local go bin
 var npmCommand = &cobra.Command{
 	Use:   "npm",
-	Short: "run PATH/npm for npm action",
+	Short: "运行 PATH/npm 的命令",
 	RunE: func(c *cobra.Command, args []string) error {
 		path, err := exec.LookPath("npm")
 		if err != nil {

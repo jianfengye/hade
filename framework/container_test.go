@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jianfengye/hade/framework/contract"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -46,8 +45,9 @@ func (sp *DemoServiceProvider) Params() []interface{} {
 	return []interface{}{sp.C}
 }
 
-func (sp *DemoServiceProvider) Boot(c Container) {
+func (sp *DemoServiceProvider) Boot(c Container) error {
 	fmt.Println("demo service boot")
+	return nil
 }
 
 func TestHadeContainer_Singleton_NoDefer(t *testing.T) {
@@ -65,16 +65,6 @@ func TestHadeContainer_Singleton_NoDefer(t *testing.T) {
 			ShouldBeNil(err)
 		})
 
-		Convey("make a demo service", func() {
-			demo, err := c.Make("demo")
-			ShouldBeNil(err)
-			serv, ok := demo.(contract.Demo)
-			ShouldBeTrue(ok)
-			Convey("call demo service method get ok", func() {
-				val := serv.Get("foo")
-				ShouldEqual(val, "bar")
-			})
-		})
 	})
 }
 
@@ -94,16 +84,6 @@ func TestHadeContainer_Singleton_Defer(t *testing.T) {
 			ShouldBeNil(err)
 		})
 
-		Convey("make a demo service", func() {
-			demo, err := c.Make("demo")
-			ShouldBeNil(err)
-			serv, ok := demo.(contract.Demo)
-			ShouldBeTrue(ok)
-			Convey("call demo service method get ok", func() {
-				val := serv.Get("foo")
-				ShouldEqual(val, "bar")
-			})
-		})
 	})
 }
 func TestHadeContainer_NotSinglton_Defer(t *testing.T) {
@@ -122,15 +102,5 @@ func TestHadeContainer_NotSinglton_Defer(t *testing.T) {
 			ShouldBeNil(err)
 		})
 
-		Convey("make a demo service", func() {
-			demo, err := c.Make("demo")
-			ShouldBeNil(err)
-			serv, ok := demo.(contract.Demo)
-			ShouldBeTrue(ok)
-			Convey("call demo service method get ok", func() {
-				val := serv.Get("foo")
-				ShouldEqual(val, "bar")
-			})
-		})
 	})
 }

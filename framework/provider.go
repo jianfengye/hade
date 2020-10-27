@@ -8,7 +8,7 @@ type ServiceProvider interface {
 	// Register registe a new function for make a service instance
 	Register(Container) NewInstance
 	// Boot will called when the service instantiate
-	Boot(Container)
+	Boot(Container) error
 	// IsDefer define whether the service instantiate when first make or register
 	IsDefer() bool
 	// Params define the necessary params for NewInstance

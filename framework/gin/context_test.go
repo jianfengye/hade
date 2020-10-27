@@ -18,13 +18,14 @@ import (
 	"testing"
 	"time"
 
+	"hade/framework/gin/binding"
+
 	"github.com/gin-contrib/sse"
 	"github.com/golang/protobuf/proto"
-	"github.com/jianfengye/hade/framework/gin/binding"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 
-	testdata "github.com/jianfengye/hade/framework/gin/testdata/protoexample"
+	testdata "hade/framework/gin/testdata/protoexample"
 )
 
 var _ context.Context = &Context{}

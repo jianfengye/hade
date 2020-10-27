@@ -3,9 +3,10 @@ package contract
 import (
 	"context"
 	"io"
+	"time"
 )
 
-const LogKey = "log"
+const LogKey = "hade:log"
 
 type LogLevel uint32
 
@@ -43,27 +44,27 @@ var AllLevels = []LogLevel{
 }
 
 // CtxFielder define ctx field which add to log field
-type CtxFielder func(ctx context.Context) []interface{}
+type CtxFielder func(ctx context.Context) map[string]interface{}
 
 // Formatter define fields format handler to string
-type Formatter func(msg string, fields []interface{}) ([]byte, error)
+type Formatter func(level LogLevel, t time.Time, msg string, fields map[string]interface{}) ([]byte, error)
 
 // Log define interface for log
 type Log interface {
 	// Panic will call panic(fields) for debug
-	Panic(ctx context.Context, msg string, fields []interface{})
+	Panic(ctx context.Context, msg string, fields map[string]interface{})
 	// Fatal will add fatal record which contains msg and fields
-	Fatal(ctx context.Context, msg string, fields []interface{})
+	Fatal(ctx context.Context, msg string, fields map[string]interface{})
 	// Error will add error record which contains msg and fields
-	Error(ctx context.Context, msg string, fields []interface{})
+	Error(ctx context.Context, msg string, fields map[string]interface{})
 	// Warn will add warn record which contains msg and fields
-	Warn(ctx context.Context, msg string, fields []interface{})
+	Warn(ctx context.Context, msg string, fields map[string]interface{})
 	// Info will add info record which contains msg and fields
-	Info(ctx context.Context, msg string, fields []interface{})
+	Info(ctx context.Context, msg string, fields map[string]interface{})
 	// Debug will add debug record which contains msg and fields
-	Debug(ctx context.Context, msg string, fields []interface{})
+	Debug(ctx context.Context, msg string, fields map[string]interface{})
 	// Trace will add trace info which contains msg and fields
-	Trace(ctx context.Context, msg string, fields []interface{})
+	Trace(ctx context.Context, msg string, fields map[string]interface{})
 
 	// SetLevel set log level, and higher level will be recorded
 	SetLevel(level LogLevel)
@@ -71,6 +72,8 @@ type Log interface {
 	SetCxtFielder(handler CtxFielder)
 	// SetFormatter will set formatter handler will covert data to string for recording
 	SetFormatter(formatter Formatter)
+	// SetOutput will set output writer
+	SetOutput(out io.Writer)
 }
 
 // FileLog define interface which fileLogger should satisfied
@@ -78,7 +81,6 @@ type SingleFileLog interface {
 	Log
 	SetFile(file string)
 	SetFolder(folder string)
-	SetOutput(out io.Writer)
 }
 
 type RotatingFileLog interface {
@@ -91,5 +93,4 @@ type RotatingFileLog interface {
 
 type ConsoleLog interface {
 	Log
-	SetOutput(out io.Writer)
 }

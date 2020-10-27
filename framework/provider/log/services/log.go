@@ -2,10 +2,13 @@ package services
 
 import (
 	"context"
+	"io"
 	pkgLog "log"
+	"time"
 
-	"github.com/jianfengye/hade/framework/contract"
-	"github.com/jianfengye/hade/framework/provider/log/formatter"
+	"hade/framework"
+	"hade/framework/contract"
+	"hade/framework/provider/log/formatter"
 )
 
 type HadeLog struct {
@@ -13,92 +16,97 @@ type HadeLog struct {
 	formatter  contract.Formatter
 	ctxFielder contract.CtxFielder
 
-	logger *pkgLog.Logger
+	output io.Writer
+
+	c framework.Container
 }
 
 func (log *HadeLog) IsLevelEnable(level contract.LogLevel) bool {
 	return level <= log.level
 }
 
-func (log *HadeLog) logf(logger *pkgLog.Logger, level contract.LogLevel, ctx context.Context, msg string, fields []interface{}) error {
+func (log *HadeLog) logf(level contract.LogLevel, ctx context.Context, msg string, fields map[string]interface{}) error {
 	if !log.IsLevelEnable(level) {
 		return nil
 	}
-	prefix := ""
-	switch level {
-	case contract.PanicLevel:
-		prefix = "[Panic] "
-	case contract.FatalLevel:
-		prefix = "[Fatal] "
-	case contract.ErrorLevel:
-		prefix = "[Error] "
-	case contract.WarnLevel:
-		prefix = "[Warn] "
-	case contract.InfoLevel:
-		prefix = "[Info] "
-	case contract.DebugLevel:
-		prefix = "[Debug] "
-	case contract.TraceLevel:
-		prefix = "[Trace] "
-	}
-	logger.SetPrefix(prefix)
+
 	fs := fields
 	if log.ctxFielder != nil {
 		t := log.ctxFielder(ctx)
 		if t != nil {
-			fs = append(fs, t...)
+			for k, v := range t {
+				fs[k] = v
+			}
 		}
 	}
+
+	if log.c.IsBind(contract.TraceKey) {
+		tracer := log.c.MustMake(contract.TraceKey).(contract.Trace)
+		tc := tracer.GetTrace(ctx)
+		if tc != nil {
+			maps := tracer.ToMap(tc)
+			for k, v := range maps {
+				fs[k] = v
+			}
+		}
+	}
+
 	if log.formatter == nil {
 		log.formatter = formatter.TextFormatter
 	}
-	ct, err := log.formatter(msg, fs)
+	ct, err := log.formatter(level, time.Now(), msg, fs)
 	if err != nil {
 		return err
 	}
 
 	if level == contract.PanicLevel {
-		logger.Panicln(string(ct))
+		pkgLog.Panicln(string(ct))
 		return nil
 	}
 
-	logger.Println(string(ct))
+	log.output.Write(ct)
+	log.output.Write([]byte("\r\n"))
 	return nil
 }
 
+// Set Output set out put file
+func (log *HadeLog) SetOutput(output io.Writer) {
+	log.output = output
+}
+
 // Panic will call panic(fields) for debug
-func (log *HadeLog) Panic(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.PanicLevel, ctx, msg, fields)
+func (log *HadeLog) Panic(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.PanicLevel, ctx, msg, fields)
 }
 
 // Fatal will add fatal record which contains msg and fields
-func (log *HadeLog) Fatal(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.FatalLevel, ctx, msg, fields)
+func (log *HadeLog) Fatal(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.FatalLevel, ctx, msg, fields)
 }
 
 // Error will add error record which contains msg and fields
-func (log *HadeLog) Error(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.ErrorLevel, ctx, msg, fields)
+func (log *HadeLog) Error(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.ErrorLevel, ctx, msg, fields)
 }
 
 // Warn will add warn record which contains msg and fields
-func (log *HadeLog) Warn(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.WarnLevel, ctx, msg, fields)
+func (log *HadeLog) Warn(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.WarnLevel, ctx, msg, fields)
 }
 
 // Info will add info record which contains msg and fields
-func (log *HadeLog) Info(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.InfoLevel, ctx, msg, fields)
+func (log *HadeLog) Info(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.InfoLevel, ctx, msg, fields)
 }
 
 // Debug will add debug record which contains msg and fields
-func (log *HadeLog) Debug(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.DebugLevel, ctx, msg, fields)
+func (log *HadeLog) Debug(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.DebugLevel, ctx, msg, fields)
 }
 
 // Trace will add trace info which contains msg and fields
-func (log *HadeLog) Trace(ctx context.Context, msg string, fields []interface{}) {
-	log.logf(log.logger, contract.TraceLevel, ctx, msg, fields)
+func (log *HadeLog) Trace(ctx context.Context, msg string, fields map[string]interface{}) {
+	log.logf(contract.TraceLevel, ctx, msg, fields)
 }
 
 // SetLevel set log level, and higher level will be recorded

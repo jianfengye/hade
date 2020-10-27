@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/jianfengye/hade/framework"
-	"github.com/jianfengye/hade/framework/contract"
+	"hade/framework"
+	"hade/framework/contract"
 )
 
 type FakeConfigProvider struct {
@@ -16,7 +16,8 @@ func (provider *FakeConfigProvider) Register(c framework.Container) framework.Ne
 }
 
 // Boot will called when the service instantiate
-func (provider *FakeConfigProvider) Boot(c framework.Container) {
+func (provider *FakeConfigProvider) Boot(c framework.Container) error {
+	return nil
 }
 
 // IsDefer define whether the service instantiate when first make or register

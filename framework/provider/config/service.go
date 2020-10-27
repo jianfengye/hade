@@ -8,6 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"hade/framework"
+	"hade/framework/contract"
+
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 
@@ -16,7 +19,10 @@ import (
 )
 
 type HadeConfig struct {
+	c framework.Container
+
 	folder   string
+	env      string
 	keyDelim string
 
 	envMaps  map[string]string // envmap
@@ -25,23 +31,26 @@ type HadeConfig struct {
 }
 
 func NewHadeConfig(params ...interface{}) (interface{}, error) {
-	if len(params) > 2 {
+	if len(params) != 4 {
 		return nil, errors.New("NewHadeConfig params error")
 	}
 
 	folder := params[0].(string)
-	var envMaps map[string]string
-	if len(params) >= 2 {
-		envMaps = params[1].(map[string]string)
-	}
+	envMaps := params[1].(map[string]string)
+	env := params[2].(string)
 
+	c := params[3].(framework.Container)
+
+	envFolder := filepath.Join(folder, env)
 	// check folder exist
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		return nil, errors.New("folder " + folder + " not exist: " + err.Error())
+	if _, err := os.Stat(envFolder); os.IsNotExist(err) {
+		return nil, errors.New("folder " + envFolder + " not exist: " + err.Error())
 	}
 
 	hadeConf := &HadeConfig{
+		c:        c,
 		folder:   folder,
+		env:      env,
 		envMaps:  envMaps,
 		confMaps: map[string]interface{}{},
 		confRaws: map[string][]byte{},
@@ -49,7 +58,7 @@ func NewHadeConfig(params ...interface{}) (interface{}, error) {
 	}
 
 	// read all yml/yaml files in folder
-	files, err := ioutil.ReadDir(folder)
+	files, err := ioutil.ReadDir(envFolder)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -59,7 +68,7 @@ func NewHadeConfig(params ...interface{}) (interface{}, error) {
 			name := s[0]
 
 			// read file bytes
-			bf, err := ioutil.ReadFile(filepath.Join(folder, file.Name()))
+			bf, err := ioutil.ReadFile(filepath.Join(envFolder, file.Name()))
 			if err != nil {
 				continue
 			}
@@ -73,6 +82,13 @@ func NewHadeConfig(params ...interface{}) (interface{}, error) {
 			}
 			hadeConf.confMaps[name] = c
 		}
+	}
+
+	// init app path
+	if hadeConf.IsExist("app.path") && c.IsBind(contract.AppKey) {
+		appPaths := hadeConf.GetStringMapString("app.path")
+		appService := c.MustMake(contract.AppKey).(contract.App)
+		appService.LoadAppConfig(appPaths)
 	}
 	return hadeConf, nil
 }
