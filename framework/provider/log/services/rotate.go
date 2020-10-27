@@ -2,11 +2,12 @@ package services
 
 import (
 	"fmt"
-	pkgLog "log"
 	"path/filepath"
 	"time"
 
-	"github.com/jianfengye/hade/framework/contract"
+	"hade/framework"
+	"hade/framework/contract"
+
 	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"github.com/pkg/errors"
 )
@@ -25,6 +26,8 @@ func NewHadeRotateLog(params ...interface{}) (interface{}, error) {
 	ctxFielder := params[1].(contract.CtxFielder)
 	formatter := params[2].(contract.Formatter)
 	configs := params[3].(map[string]interface{})
+	c := params[4].(framework.Container)
+
 	folder := configs["folder"].(string)
 	file := configs["file"].(string)
 	maxFiles := configs["max_files"].(int)
@@ -47,7 +50,8 @@ func NewHadeRotateLog(params ...interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "new rotatelogs error")
 	}
-	log.logger = pkgLog.New(w, "", pkgLog.LstdFlags)
+	log.SetOutput(w)
+	log.c = c
 	return log, nil
 }
 

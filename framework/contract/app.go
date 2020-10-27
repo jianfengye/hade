@@ -1,7 +1,7 @@
 package contract
 
 // AppKey is the key in container
-const AppKey = "app"
+const AppKey = "hade:app"
 
 // App define application structure
 type App interface {
@@ -9,6 +9,14 @@ type App interface {
 	Version() string
 	// base path which is the base folder
 	BasePath() string
+	// app path which is the app folder
+	AppPath() string
+	// app/http
+	HttpPath() string
+	// app/http/swagger
+	SwaggerPath() string
+	// app/console
+	ConsolePath() string
 	// config folder which contains config
 	ConfigPath() string
 	// environmentPath which contain .env
@@ -17,4 +25,10 @@ type App interface {
 	StoragePath() string
 	// logPath define logPath
 	LogPath() string
+
+	PidPath() string
+
+	CachePath() string
+	// load config
+	LoadAppConfig(map[string]string)
 }

@@ -1,6 +1,7 @@
 package framework
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -48,6 +49,23 @@ func NewHadeContainer() *HadeContainer {
 	}
 }
 
+func (hade *HadeContainer) GetProviders() []ServiceProvider {
+	return hade.providers
+}
+
+func (hade *HadeContainer) PrintList() []string {
+	ret := []string{}
+	for _, provider := range hade.providers {
+		name := provider.Name()
+		// register := provider.Register(hade)
+		// funcName := reflect.TypeOf(register).Name()
+
+		line := fmt.Sprint(name)
+		ret = append(ret, line)
+	}
+	return ret
+}
+
 // Bind make relationship between provider and contract
 func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) error {
 	hade.lock.RLock()
@@ -60,7 +78,9 @@ func (hade *HadeContainer) Bind(provider ServiceProvider, isSingleton bool) erro
 
 	// if provider is not defer
 	if provider.IsDefer() == false {
-		provider.Boot(hade)
+		if err := provider.Boot(hade); err != nil {
+			return err
+		}
 		params := provider.Params()
 		method := hade.methods[key]
 		instance, err := method(params...)
@@ -93,11 +113,11 @@ func (hade *HadeContainer) findServiceProvider(key string) ServiceProvider {
 }
 
 func (hade *HadeContainer) Make(key string) (interface{}, error) {
-	return hade.make(key, nil)
+	return hade.make(key, nil, false)
 }
 
 func (hade *HadeContainer) MustMake(key string) interface{} {
-	serv, err := hade.make(key, nil)
+	serv, err := hade.make(key, nil, false)
 	if err != nil {
 		panic(err)
 	}
@@ -105,25 +125,30 @@ func (hade *HadeContainer) MustMake(key string) interface{} {
 }
 
 func (hade *HadeContainer) MakeNew(key string, params []interface{}) (interface{}, error) {
-	return hade.make(key, params)
+	return hade.make(key, params, true)
 }
 
-func (hade *HadeContainer) make(key string, params []interface{}) (interface{}, error) {
+func (hade *HadeContainer) make(key string, params []interface{}, isNew bool) (interface{}, error) {
 	// check has Register
 	if hade.findServiceProvider(key) == nil {
 		return nil, errors.New("contract " + key + " have not register")
 	}
 
-	// check instance
-	if ins, ok := hade.instances[key]; ok {
-		return ins, nil
+	// if isNew, call boot
+	if isNew == false {
+		// check instance
+		if ins, ok := hade.instances[key]; ok {
+			return ins, nil
+		}
 	}
 
 	// is not instance
 	method := hade.methods[key] // must ok
 	prov := hade.findServiceProvider(key)
 	isSingle := hade.isSingletons[key]
-	prov.Boot(hade)
+	if err := prov.Boot(hade); err != nil {
+		return nil, err
+	}
 	if params == nil {
 		params = prov.Params()
 	}

@@ -1,5 +1,9 @@
 package tests
 
 const (
-	BasePath = "/Users/didi/Documents/workspace/hade/testdata/"
+	BasePath = "/Users/Documents/workspace/hade_sts/"
 )
+
+func init() {
+	middlewareInit()
+}

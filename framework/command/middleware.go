@@ -9,20 +9,20 @@ import (
 	"path"
 	"path/filepath"
 
+	"hade/framework/cobra"
+	"hade/framework/command/util"
+	"hade/framework/contract"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/jianfengye/collection"
-	"github.com/jianfengye/hade/framework/contract"
-	"github.com/spf13/cobra"
 )
 
-// func middlewareInit() {
-// 	middlewareCommand.AddCommand(middlewareAllCommand)
-// }
+var ginPath string = "hade/framework/gin"
 
 // middlewareCommand show all installed middleware
 var middlewareCommand = &cobra.Command{
 	Use:   "middleware",
-	Short: "hade middleware action",
+	Short: "hade middleware",
 	RunE: func(c *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			c.Help()
@@ -32,13 +32,13 @@ var middlewareCommand = &cobra.Command{
 }
 
 var middlewareAllCommand = &cobra.Command{
-	Use:   "all",
-	Short: "show all installed middleware",
+	Use:   "list",
+	Short: "list all installed middleware",
 	RunE: func(c *cobra.Command, args []string) error {
-		container := GetContainer(c.Root())
+		container := util.GetContainer(c.Root())
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
-		middlewarePath := path.Join(appService.BasePath(), "framework", "middleware")
+		middlewarePath := path.Join(appService.BasePath(), "app", "http", "middleware")
 		// check folder
 		files, err := ioutil.ReadDir(middlewarePath)
 		if err != nil {
@@ -46,7 +46,7 @@ var middlewareAllCommand = &cobra.Command{
 		}
 		for _, f := range files {
 			if f.IsDir() {
-				fmt.Print(f.Name())
+				fmt.Println(f.Name())
 			}
 		}
 		return nil
@@ -55,7 +55,7 @@ var middlewareAllCommand = &cobra.Command{
 
 var middlewareAddCommand = &cobra.Command{
 	Use:   "add",
-	Short: "add gin middleware to framework",
+	Short: "add middleware to app, https://github.com/gin-contrib/[middleware].git",
 	RunE: func(c *cobra.Command, args []string) error {
 		// step1 : read args
 		if len(args) != 1 {
@@ -63,10 +63,10 @@ var middlewareAddCommand = &cobra.Command{
 		}
 		repo := args[0]
 		// step2 : download git to middleware sub directory
-		container := GetContainer(c.Root())
+		container := util.GetContainer(c.Root())
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
-		middlewarePath := path.Join(appService.BasePath(), "framework", "middleware")
+		middlewarePath := path.Join(appService.BasePath(), "app", "http", "middleware")
 		url := "https://github.com/gin-contrib/" + repo + ".git"
 		fmt.Println("download middleware from gin-contrib:")
 		fmt.Println(url)
@@ -105,7 +105,7 @@ var middlewareAddCommand = &cobra.Command{
 			isContain := bytes.Contains(c, []byte("github.com/gin-gonic/gin"))
 			if isContain {
 				fmt.Println("update file:" + path)
-				c = bytes.ReplaceAll(c, []byte("github.com/gin-gonic/gin"), []byte("github.com/jianfengye/hade/framework/gin"))
+				c = bytes.ReplaceAll(c, []byte("github.com/gin-gonic/gin"), []byte(ginPath))
 				err = ioutil.WriteFile(path, c, 0644)
 				if err != nil {
 					return err
@@ -120,16 +120,16 @@ var middlewareAddCommand = &cobra.Command{
 
 var middlewareRemoveCommand = &cobra.Command{
 	Use:   "remove",
-	Short: "remove gin middleware to framework",
+	Short: "remove middleware from app",
 	RunE: func(c *cobra.Command, args []string) error {
 		if len(args) <= 0 {
 			return errors.New("arg is invalid")
 		}
 
-		container := GetContainer(c.Root())
+		container := util.GetContainer(c.Root())
 		appService := container.MustMake(contract.AppKey).(contract.App)
 
-		middlewarePath := path.Join(appService.BasePath(), "framework", "middleware")
+		middlewarePath := path.Join(appService.BasePath(), "app", "http", "middleware")
 
 		files, err := ioutil.ReadDir(middlewarePath)
 		if err != nil {
@@ -146,3 +146,5 @@ var middlewareRemoveCommand = &cobra.Command{
 		return nil
 	},
 }
+
+// TODO: add create command for middleware

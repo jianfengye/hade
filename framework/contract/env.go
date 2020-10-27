@@ -9,7 +9,7 @@ const (
 	EnvDevelopment = "development"
 
 	// EnvKey is the key in container
-	EnvKey = "env"
+	EnvKey = "hade:env"
 )
 
 // Env define golang run enviornment
@@ -17,10 +17,6 @@ const (
 type Env interface {
 	// AppEnv get current environment
 	AppEnv() string
-	// AppDebug check app is debug open
-	AppDebug() bool
-	// AppURL define app url in local
-	AppURL() string
 
 	// IsExist check setting is exist
 	IsExist(string) bool

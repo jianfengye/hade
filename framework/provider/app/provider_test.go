@@ -3,26 +3,28 @@ package app
 import (
 	"testing"
 
-	"github.com/jianfengye/hade/framework"
-	"github.com/jianfengye/hade/framework/contract"
+	"hade/framework"
+	"hade/framework/contract"
+	"hade/tests"
+
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestHadeAppProvider(t *testing.T) {
 	Convey("test normal case", t, func() {
-		basePath := "/Users/didi/Documents/workspace/hade/"
+		basePath := tests.BasePath
 		c := framework.NewHadeContainer()
 		sp := &HadeAppProvider{BasePath: basePath}
 
 		err := c.Singleton(sp)
 		So(err, ShouldBeNil)
 
-		app, err := c.Make("app")
+		app, err := c.Make(contract.AppKey)
 		So(err, ShouldBeNil)
 		var iapp *contract.App
 		So(app, ShouldImplement, iapp)
 		hade := app.(contract.App)
 		logPath := hade.LogPath()
-		So(logPath, ShouldEqual, basePath+"storage/logs/")
+		So(logPath, ShouldEqual, basePath+"storage/log/")
 	})
 }

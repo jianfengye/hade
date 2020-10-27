@@ -1,39 +1,53 @@
 package command
 
 import (
-	"context"
-
-	"github.com/jianfengye/hade/framework"
-	"github.com/spf13/cobra"
+	"hade/framework/cobra"
+	"hade/framework/command/swagger"
 )
 
-type ContainerKey string
-
-const containerKey = ContainerKey("container")
-
-func RegiestContainer(c framework.Container, cmd *cobra.Command) context.Context {
-	return context.WithValue(context.Background(), containerKey, c)
-}
-
-func GetContainer(cmd *cobra.Command) framework.Container {
-	val := cmd.Context().Value(containerKey)
-	if val == nil {
-		container := framework.NewHadeContainer()
-		RegiestContainer(container, cmd)
-		return container
-	}
-	return val.(framework.Container)
-}
-
 // AddKernelCommands will add all command/* to root command
-func AddKernelCommands(cmd *cobra.Command) {
-	cmd.AddCommand(envCommand)
-	cmd.AddCommand(serveCommand)
-	cmd.AddCommand(goCommand)
-	cmd.AddCommand(npmCommand)
-	cmd.AddCommand(buildCommand)
+func AddKernelCommands(root *cobra.Command) {
+	root.SetHelpCommand(helpCommand)
+
+	root.AddCommand(envCommand)
+	root.AddCommand(deployCommand)
+
+	// cron
+	root.AddCommand(initCronCommand())
+	// cmd
+	cmdCommand.AddCommand(cmdListCommand)
+	cmdCommand.AddCommand(cmdCreateCommand)
+	root.AddCommand(cmdCommand)
+
+	// build
+	buildCommand.AddCommand(buildSelfCommand)
+	buildCommand.AddCommand(buildBackendCommand)
+	buildCommand.AddCommand(buildFrontendCommand)
+	buildCommand.AddCommand(buildAllCommand)
+	root.AddCommand(buildCommand)
+
+	// app
+	root.AddCommand(initAppCommand())
+
+	// dev
+	root.AddCommand(initDevCommand())
+
+	// middleware
 	middlewareCommand.AddCommand(middlewareAllCommand)
 	middlewareCommand.AddCommand(middlewareAddCommand)
 	middlewareCommand.AddCommand(middlewareRemoveCommand)
-	cmd.AddCommand(middlewareCommand)
+	root.AddCommand(middlewareCommand)
+
+	// swagger
+	swagger.IndexCommand.AddCommand(swagger.InitServeCommand())
+	swagger.IndexCommand.AddCommand(swagger.GenCommand)
+	root.AddCommand(swagger.IndexCommand)
+
+	// provider
+	providerCommand.AddCommand(providerListCommand)
+	providerCommand.AddCommand(providerCreateCommand)
+	root.AddCommand(providerCommand)
+
+	// new
+	root.AddCommand(initNewCommand())
 }

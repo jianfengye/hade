@@ -1,12 +1,14 @@
 package log
 
 import (
+	"os"
 	"strings"
 
-	"github.com/jianfengye/hade/framework"
-	"github.com/jianfengye/hade/framework/contract"
-	"github.com/jianfengye/hade/framework/provider/log/formatter"
-	"github.com/jianfengye/hade/framework/provider/log/services"
+	"hade/framework"
+	"hade/framework/contract"
+	"hade/framework/provider/log/formatter"
+	"hade/framework/provider/log/services"
+	"hade/framework/util"
 )
 
 type HadeLogServiceProvider struct {
@@ -19,15 +21,19 @@ type HadeLogServiceProvider struct {
 	Formatter  contract.Formatter
 	Level      contract.LogLevel
 	CtxFielder contract.CtxFielder
+
+	c framework.Container
 }
 
 // Register registe a new function for make a service instance
 func (l *HadeLogServiceProvider) Register(c framework.Container) framework.NewInstance {
-	if !c.IsBind(contract.ConfigKey) {
+	tcs, err := c.Make(contract.ConfigKey)
+	if err != nil {
 		return services.NewHadeConsoleLog
 	}
 
-	cs := c.MustMake(contract.ConfigKey).(contract.Config)
+	cs := tcs.(contract.Config)
+
 	l.driver = strings.ToLower(cs.GetString("log.driver"))
 	l.configs = cs.GetStringMap("log")
 
@@ -44,7 +50,7 @@ func (l *HadeLogServiceProvider) Register(c framework.Container) framework.NewIn
 }
 
 // Boot will called when the service instantiate
-func (l *HadeLogServiceProvider) Boot(c framework.Container) {
+func (l *HadeLogServiceProvider) Boot(c framework.Container) error {
 	// Set Formatter/Level/CtxFielder
 	if l.Formatter == nil {
 		l.Formatter = formatter.TextFormatter
@@ -74,6 +80,10 @@ func (l *HadeLogServiceProvider) Boot(c framework.Container) {
 		if _, ok := l.configs["folder"]; !ok {
 			l.configs["folder"] = app.LogPath()
 		}
+		folder := l.configs["folder"].(string)
+		if !util.Exists(folder) {
+			os.MkdirAll(folder, os.ModePerm)
+		}
 		if _, ok := l.configs["file"]; !ok {
 			l.configs["file"] = "hade.log"
 		}
@@ -81,6 +91,10 @@ func (l *HadeLogServiceProvider) Boot(c framework.Container) {
 		// check configs default: folder/file
 		if _, ok := l.configs["folder"]; !ok {
 			l.configs["folder"] = app.LogPath()
+		}
+		folder := l.configs["folder"].(string)
+		if !util.Exists(folder) {
+			os.MkdirAll(folder, os.ModePerm)
 		}
 		if _, ok := l.configs["file"]; !ok {
 			l.configs["file"] = "hade.log"
@@ -92,17 +106,20 @@ func (l *HadeLogServiceProvider) Boot(c framework.Container) {
 			l.configs["date_format"] = "ymd"
 		}
 	}
+
+	l.c = c
+	return nil
 }
 
 // IsDefer define whether the service instantiate when first make or register
 func (l *HadeLogServiceProvider) IsDefer() bool {
-	return false
+	return true
 }
 
 // Params define the necessary params for NewInstance
 func (l *HadeLogServiceProvider) Params() []interface{} {
 	// param sequence: level, ctxFielder, Formatter, map[string]string(folder/file)
-	return []interface{}{l.Level, l.CtxFielder, l.Formatter, l.configs}
+	return []interface{}{l.Level, l.CtxFielder, l.Formatter, l.configs, l.c}
 }
 
 /// Name define the name for this service
